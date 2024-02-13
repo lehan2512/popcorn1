@@ -85,7 +85,41 @@ class _HomeScreenState extends State<HomeScreen>
                 'Trending TV shows',
                 style: GoogleFonts.aBeeZee(fontSize: 20)
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 10),
+              SizedBox
+              (
+                width: double.infinity,
+                child: CarouselSlider.builder
+                (
+                  itemCount: 10,
+                  options: CarouselOptions
+                  (
+                    height: 200,
+                    viewportFraction: 0.45,
+                    pageSnapping: true,
+                  ),
+                  itemBuilder: (context, itemIndex, pageViewIndex)
+                  {
+                    return ClipRRect
+                    (
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container
+                      (
+                        height: 200,
+                        width: 200,
+                        color: Colours.themeColour,
+                      ),
+                    );
+                  }
+                )
+              ),
+              const SizedBox(height: 32),
+              Text
+              (
+                "What's on cinema this week",
+                style: GoogleFonts.aBeeZee(fontSize: 20)
+              ),
+              const SizedBox(height: 10),
               SizedBox
               (
                 height: 200,
@@ -95,20 +129,145 @@ class _HomeScreenState extends State<HomeScreen>
                   scrollDirection: Axis.horizontal,
                   physics: const BouncingScrollPhysics(),
                   itemCount: 10,
-                  itemBuilder: (context, index)
+                  itemBuilder: (context, index) 
                   {
-                    return Padding(
+                    return Padding
+                    (
                       padding: const EdgeInsets.all(8.0),
                       child: Container
                       (
-                          color: Colours.themeColour,
-                          height: 200,
-                          width: 200
+                        color: Colours.themeColour,
+                        height: 200,
+                        width: 200,
                       ),
                     );
                   },
-                )
-              )
+                ),
+              ),
+              const SizedBox(height: 32),
+              Text
+              (
+                "What's on cinema this week",
+                style: GoogleFonts.aBeeZee(fontSize: 20)
+              ),
+              const SizedBox(height: 10),
+              SizedBox
+              (
+                height: 200,
+                width: double.infinity,
+                child: ListView.builder
+                (
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: 10,
+                  itemBuilder: (context, index) 
+                  {
+                    return Padding
+                    (
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container
+                      (
+                        color: Colours.themeColour,
+                        height: 200,
+                        width: 200,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 32),
+              Text
+              (
+                "Highest grossing movies",
+                style: GoogleFonts.aBeeZee(fontSize: 20)
+              ),
+              const SizedBox(height: 10),
+              SizedBox
+              (
+                height: 200,
+                width: double.infinity,
+                child: ListView.builder
+                (
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: 10,
+                  itemBuilder: (context, index) 
+                  {
+                    return Padding
+                    (
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container
+                      (
+                        color: Colours.themeColour,
+                        height: 200,
+                        width: 200,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 32),
+              Text
+              (
+                "Highest grossing TV shows",
+                style: GoogleFonts.aBeeZee(fontSize: 20)
+              ),
+              const SizedBox(height: 10),
+              SizedBox
+              (
+                height: 200,
+                width: double.infinity,
+                child: ListView.builder
+                (
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: 10,
+                  itemBuilder: (context, index) 
+                  {
+                    return Padding
+                    (
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container
+                      (
+                        color: Colours.themeColour,
+                        height: 200,
+                        width: 200,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 32),
+              Text
+              (
+                "Watched again",
+                style: GoogleFonts.aBeeZee(fontSize: 20)
+              ),
+              const SizedBox(height: 10),
+              SizedBox
+              (
+                height: 200,
+                width: double.infinity,
+                child: ListView.builder
+                (
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: 10,
+                  itemBuilder: (context, index) 
+                  {
+                    return Padding
+                    (
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container
+                      (
+                        color: Colours.themeColour,
+                        height: 200,
+                        width: 200,
+                      ),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         )
