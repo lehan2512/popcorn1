@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'Models/movie.dart';
+import 'api/api.dart';
 import 'colours.dart';
 
 class HomeScreen extends StatefulWidget
@@ -13,6 +15,15 @@ class HomeScreen extends StatefulWidget
 
 class _HomeScreenState extends State<HomeScreen>
 {
+  late Future<List<Movie>> trendingMovies;
+
+  @override
+  void initState()
+  {
+    super.initState();
+    trendingMovies = Api().getTrendingMovies();
+  }
+
   @override
   Widget build(BuildContext context)
   {
@@ -48,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen>
                 style: GoogleFonts.aBeeZee(fontSize: 20),
               ),
               const SizedBox(height: 15),
+              
               SizedBox
               (
                 width: double.infinity,
