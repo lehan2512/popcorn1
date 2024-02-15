@@ -16,10 +16,10 @@ final AsyncSnapshot snapshot;
       width: double.infinity,
       child: CarouselSlider.builder
       (
-        itemCount: 10,
+        itemCount: snapshot.data.length,
         options: CarouselOptions
         (
-          height: 200,
+          height: 300,
           autoPlay: true,
           viewportFraction: 0.55,
           enlargeCenterPage: true,
@@ -34,8 +34,8 @@ final AsyncSnapshot snapshot;
             borderRadius: BorderRadius.circular(16),
             child: SizedBox
             (
-              height: 200,
-              width: 300,
+              height: 300,
+              width: 200,
               child: Image.network
               (
                 filterQuality: FilterQuality.high,

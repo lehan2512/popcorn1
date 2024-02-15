@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'Models/movie.dart';
+import 'Models/TVshow.dart';
 import 'api/api.dart';
 import 'widgets/childrens_slider.dart';
 import 'widgets/cinema_slider.dart';
@@ -21,12 +22,14 @@ class HomeScreen extends StatefulWidget
 class _HomeScreenState extends State<HomeScreen>
 {
   late Future<List<Movie>> trendingMovies;
+  late Future<List<TV>> trendingTV;
 
   @override
   void initState()
   {
     super.initState();
     trendingMovies = Api().getTrendingMovies();
+    trendingTV = Api().getTrendingTV();
   }
 
   @override
@@ -96,7 +99,31 @@ class _HomeScreenState extends State<HomeScreen>
                 style: GoogleFonts.aBeeZee(fontSize: 20)
               ),
               const SizedBox(height: 10),
-              const TrendingTVSlider(),
+              SizedBox
+              (
+                child: FutureBuilder
+                (
+                  future: trendingTV,
+                  builder:(context, snapshot) 
+                  {
+                    if (snapshot.hasError)
+                    {
+                      return Center
+                      (
+                        child: Text(snapshot.error.toString()),
+                      );
+                    }
+                    else if(snapshot.hasData)
+                    {
+                      return TrendingTVSlider(snapshot: snapshot,);
+                    }
+                    else
+                    {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  },
+                )
+              ),
               const SizedBox(height: 32),
               Text
               (
