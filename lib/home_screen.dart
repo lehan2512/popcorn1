@@ -1,9 +1,14 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'Models/movie.dart';
 import 'api/api.dart';
-import 'colours.dart';
+import 'widgets/childrens_slider.dart';
+import 'widgets/cinema_slider.dart';
+import 'widgets/grossingMovies_slider.dart';
+import 'widgets/grossingTV_slider.dart';
+import 'widgets/trendingMovies_slider.dart';
+import 'widgets/trendingTV_slider.dart';
+import 'widgets/watched_slider.dart';
 
 class HomeScreen extends StatefulWidget
 {
@@ -59,36 +64,29 @@ class _HomeScreenState extends State<HomeScreen>
                 style: GoogleFonts.aBeeZee(fontSize: 20),
               ),
               const SizedBox(height: 15),
-              
               SizedBox
               (
-                width: double.infinity,
-                child: CarouselSlider.builder
+                child: FutureBuilder
                 (
-                  itemCount: 10,
-                  options: CarouselOptions
-                  (
-                    height: 200,
-                    autoPlay: true,
-                    viewportFraction: 0.55,
-                    enlargeCenterPage: true,
-                    pageSnapping: true,
-                    autoPlayCurve: Curves.fastOutSlowIn,
-                    autoPlayAnimationDuration: const Duration(seconds: 1),
-                  ),
-                  itemBuilder: (context, itemIndex, pageViewIndex)
+                  future: trendingMovies,
+                  builder:(context, snapshot) 
                   {
-                    return ClipRRect
-                    (
-                      borderRadius: BorderRadius.circular(16),
-                      child: Container
+                    if (snapshot.hasError)
+                    {
+                      return Center
                       (
-                        height: 200,
-                        width: 300,
-                        color: Colours.themeColour,
-                      ),
-                    );
-                  }
+                        child: Text(snapshot.error.toString()),
+                      );
+                    }
+                    else if(snapshot.hasData)
+                    {
+                      return TrendingMoviesSlider(snapshot: snapshot,);
+                    }
+                    else
+                    {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  },
                 )
               ),
               const SizedBox(height: 32),
@@ -98,33 +96,7 @@ class _HomeScreenState extends State<HomeScreen>
                 style: GoogleFonts.aBeeZee(fontSize: 20)
               ),
               const SizedBox(height: 10),
-              SizedBox
-              (
-                width: double.infinity,
-                child: CarouselSlider.builder
-                (
-                  itemCount: 10,
-                  options: CarouselOptions
-                  (
-                    height: 200,
-                    viewportFraction: 0.45,
-                    pageSnapping: true,
-                  ),
-                  itemBuilder: (context, itemIndex, pageViewIndex)
-                  {
-                    return ClipRRect
-                    (
-                      borderRadius: BorderRadius.circular(16),
-                      child: Container
-                      (
-                        height: 200,
-                        width: 200,
-                        color: Colours.themeColour,
-                      ),
-                    );
-                  }
-                )
-              ),
+              const TrendingTVSlider(),
               const SizedBox(height: 32),
               Text
               (
@@ -132,61 +104,7 @@ class _HomeScreenState extends State<HomeScreen>
                 style: GoogleFonts.aBeeZee(fontSize: 20)
               ),
               const SizedBox(height: 10),
-              SizedBox
-              (
-                height: 200,
-                width: double.infinity,
-                child: ListView.builder
-                (
-                  scrollDirection: Axis.horizontal,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: 10,
-                  itemBuilder: (context, index) 
-                  {
-                    return Padding
-                    (
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container
-                      (
-                        color: Colours.themeColour,
-                        height: 200,
-                        width: 200,
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 32),
-              Text
-              (
-                "What's on cinema this week",
-                style: GoogleFonts.aBeeZee(fontSize: 20)
-              ),
-              const SizedBox(height: 10),
-              SizedBox
-              (
-                height: 200,
-                width: double.infinity,
-                child: ListView.builder
-                (
-                  scrollDirection: Axis.horizontal,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: 10,
-                  itemBuilder: (context, index) 
-                  {
-                    return Padding
-                    (
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container
-                      (
-                        color: Colours.themeColour,
-                        height: 200,
-                        width: 200,
-                      ),
-                    );
-                  },
-                ),
-              ),
+              const CinemaSlider(),
               const SizedBox(height: 32),
               Text
               (
@@ -194,30 +112,7 @@ class _HomeScreenState extends State<HomeScreen>
                 style: GoogleFonts.aBeeZee(fontSize: 20)
               ),
               const SizedBox(height: 10),
-              SizedBox
-              (
-                height: 200,
-                width: double.infinity,
-                child: ListView.builder
-                (
-                  scrollDirection: Axis.horizontal,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: 10,
-                  itemBuilder: (context, index) 
-                  {
-                    return Padding
-                    (
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container
-                      (
-                        color: Colours.themeColour,
-                        height: 200,
-                        width: 200,
-                      ),
-                    );
-                  },
-                ),
-              ),
+              GrossingMoviesSlider(),
               const SizedBox(height: 32),
               Text
               (
@@ -225,30 +120,15 @@ class _HomeScreenState extends State<HomeScreen>
                 style: GoogleFonts.aBeeZee(fontSize: 20)
               ),
               const SizedBox(height: 10),
-              SizedBox
+              const GrossingTVSlider(),
+              const SizedBox(height: 32),
+              Text
               (
-                height: 200,
-                width: double.infinity,
-                child: ListView.builder
-                (
-                  scrollDirection: Axis.horizontal,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: 10,
-                  itemBuilder: (context, index) 
-                  {
-                    return Padding
-                    (
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container
-                      (
-                        color: Colours.themeColour,
-                        height: 200,
-                        width: 200,
-                      ),
-                    );
-                  },
-                ),
+                "Childrens movies",
+                style: GoogleFonts.aBeeZee(fontSize: 20)
               ),
+              const SizedBox(height: 10),
+              const ChildrensSlider(),
               const SizedBox(height: 32),
               Text
               (
@@ -256,30 +136,7 @@ class _HomeScreenState extends State<HomeScreen>
                 style: GoogleFonts.aBeeZee(fontSize: 20)
               ),
               const SizedBox(height: 10),
-              SizedBox
-              (
-                height: 200,
-                width: double.infinity,
-                child: ListView.builder
-                (
-                  scrollDirection: Axis.horizontal,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: 10,
-                  itemBuilder: (context, index) 
-                  {
-                    return Padding
-                    (
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container
-                      (
-                        color: Colours.themeColour,
-                        height: 200,
-                        width: 200,
-                      ),
-                    );
-                  },
-                ),
-              ),
+              const WatchedSlider(),
             ],
           ),
         )
@@ -287,4 +144,18 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
