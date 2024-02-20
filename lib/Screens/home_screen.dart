@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:popcorn1/widgets/tonightOnTV_slider.dart';
-import 'Models/movie.dart';
-import 'Models/TVshow.dart';
-import 'api/api.dart';
-import 'widgets/childrens_slider.dart';
-import 'widgets/cinema_slider.dart';
-import 'widgets/grossingMovies_slider.dart';
-import 'widgets/grossingTV_slider.dart';
-import 'widgets/trendingMovies_slider.dart';
-import 'widgets/trendingTV_slider.dart';
-import 'widgets/watched_slider.dart';
+import 'package:popcorn1/widgets/slider%20widgets/tonightOnTV_slider.dart';
+import '../Models/movie.dart';
+import '../Models/TVshow.dart';
+import '../api/api.dart';
+import '../widgets/slider widgets/childrens_slider.dart';
+import '../widgets/slider widgets/cinema_slider.dart';
+import '../widgets/slider widgets/grossingMovies_slider.dart';
+import '../widgets/slider widgets/grossingTV_slider.dart';
+import '../widgets/slider widgets/trendingMovies_slider.dart';
+import '../widgets/slider widgets/trendingTV_slider.dart';
+import '../widgets/slider widgets/watched_slider.dart';
 
 class HomeScreen extends StatefulWidget
 {
