@@ -25,11 +25,11 @@ class Movie
   {
     return Movie
     (
-      title: json["title"] as String,
-      backdropPath: json["backdrop_path"] as String,
-      overview: json["overview"] as String,
-      posterPath: json["poster_path"] as String,
-      releaseDate: json["release_date"] as String,
+      title: json["title"].toString(),
+      backdropPath: json["backdrop_path"].toString(),
+      overview: json["overview"].toString(),
+      posterPath: json["poster_path"].toString(),
+      releaseDate: json["release_date"].toString(),
       voteAverage: json["vote_average"] as double,
       adult: json["adult"] as bool,
     );
