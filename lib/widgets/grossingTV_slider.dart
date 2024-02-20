@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:popcorn1/colours.dart';
+import 'package:popcorn1/constants.dart';
 
 class GrossingTVSlider extends StatelessWidget {
   const GrossingTVSlider({
-    super.key,
+    super.key, required this.snapshot,
   });
 
+final AsyncSnapshot snapshot;
   @override
   Widget build(BuildContext context) {
     return SizedBox
@@ -16,7 +17,7 @@ class GrossingTVSlider extends StatelessWidget {
       (
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
-        itemCount: 10,
+        itemCount: snapshot.data.length,
         itemBuilder: (context, index) 
         {
           return Padding
@@ -24,9 +25,14 @@ class GrossingTVSlider extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Container
             (
-              color: Colours.themeColour,
               height: 200,
               width: 200,
+              child: Image.network
+              (
+                filterQuality: FilterQuality.high,
+                fit: BoxFit.cover,
+                '${Constants.imagePath}${snapshot.data[index].posterPath}'
+              ),
             ),
           );
         },

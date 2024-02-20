@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:popcorn1/colours.dart';
+import 'package:popcorn1/constants.dart';
 
 class ChildrensSlider extends StatelessWidget {
   const ChildrensSlider({
-    super.key,
+    super.key, required this.snapshot,
   });
 
+final AsyncSnapshot snapshot;
   @override
   Widget build(BuildContext context) {
     return SizedBox
@@ -16,17 +17,22 @@ class ChildrensSlider extends StatelessWidget {
       (
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
-        itemCount: 10,
+        itemCount: snapshot.data.length,
         itemBuilder: (context, index) 
         {
           return Padding
           (
             padding: const EdgeInsets.all(8.0),
-            child: Container
+            child: SizedBox
             (
-              color: Colours.themeColour,
               height: 200,
               width: 300,
+              child: Image.network
+              (
+                filterQuality: FilterQuality.high,
+                fit: BoxFit.cover,
+                '${Constants.imagePath}${snapshot.data[index].posterPath}'
+              ),
             ),
           );
         },

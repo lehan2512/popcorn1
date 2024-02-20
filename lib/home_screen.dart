@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:popcorn1/widgets/tonightOnTV_slider.dart';
 import 'Models/movie.dart';
 import 'Models/TVshow.dart';
 import 'api/api.dart';
@@ -23,6 +24,11 @@ class _HomeScreenState extends State<HomeScreen>
 {
   late Future<List<Movie>> trendingMovies;
   late Future<List<TV>> trendingTV;
+  late Future<List<Movie>> cinemaMovies;
+  late Future<List<TV>> tonightOnTV;
+  late Future<List<Movie>> grossingMovies;
+  late Future<List<TV>> grossingTV;
+  late Future<List<Movie>> childrensMovies;
 
   @override
   void initState()
@@ -30,6 +36,11 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
     trendingMovies = Api().getTrendingMovies();
     trendingTV = Api().getTrendingTV();
+    cinemaMovies = Api().getCinemaMovies();
+    tonightOnTV = Api().getTonightOnTV();
+    grossingMovies = Api().getGrossingMovies();
+    grossingTV = Api().getGrossingTV();
+    childrensMovies = Api().getChildrensMovies();
   }
 
   @override
@@ -131,7 +142,63 @@ class _HomeScreenState extends State<HomeScreen>
                 style: GoogleFonts.aBeeZee(fontSize: 20)
               ),
               const SizedBox(height: 10),
-              const CinemaSlider(),
+              SizedBox
+              (
+                child: FutureBuilder
+                (
+                  future: cinemaMovies,
+                  builder:(context, snapshot) 
+                  {
+                    if (snapshot.hasError)
+                    {
+                      return Center
+                      (
+                        child: Text(snapshot.error.toString()),
+                      );
+                    }
+                    else if(snapshot.hasData)
+                    {
+                      return CinemaSlider(snapshot: snapshot,);
+                    }
+                    else
+                    {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  },
+                )
+              ),
+              const SizedBox(height: 32),
+              Text
+              (
+                "What's on TV tonight",
+                style: GoogleFonts.aBeeZee(fontSize: 20)
+              ),
+              const SizedBox(height: 10),
+              SizedBox
+              (
+                child: FutureBuilder
+                (
+                  future: tonightOnTV,
+                  builder:(context, snapshot) 
+                  {
+                    if (snapshot.hasError)
+                    {
+                      return Center
+                      (
+                        child: Text(snapshot.error.toString()),
+                      );
+                    }
+                    else if(snapshot.hasData)
+                    {
+                      return TonightOnTVSlider(snapshot: snapshot,);
+                    }
+                    else
+                    {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  },
+                )
+              ),
               const SizedBox(height: 32),
               Text
               (
@@ -139,7 +206,31 @@ class _HomeScreenState extends State<HomeScreen>
                 style: GoogleFonts.aBeeZee(fontSize: 20)
               ),
               const SizedBox(height: 10),
-              GrossingMoviesSlider(),
+              SizedBox
+              (
+                child: FutureBuilder
+                (
+                  future: grossingMovies,
+                  builder:(context, snapshot) 
+                  {
+                    if (snapshot.hasError)
+                    {
+                      return Center
+                      (
+                        child: Text(snapshot.error.toString()),
+                      );
+                    }
+                    else if(snapshot.hasData)
+                    {
+                      return GrossingMoviesSlider(snapshot: snapshot,);
+                    }
+                    else
+                    {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  },
+                )
+              ),
               const SizedBox(height: 32),
               Text
               (
@@ -147,7 +238,31 @@ class _HomeScreenState extends State<HomeScreen>
                 style: GoogleFonts.aBeeZee(fontSize: 20)
               ),
               const SizedBox(height: 10),
-              const GrossingTVSlider(),
+              SizedBox
+              (
+                child: FutureBuilder
+                (
+                  future: grossingTV,
+                  builder:(context, snapshot) 
+                  {
+                    if (snapshot.hasError)
+                    {
+                      return Center
+                      (
+                        child: Text(snapshot.error.toString()),
+                      );
+                    }
+                    else if(snapshot.hasData)
+                    {
+                      return GrossingTVSlider(snapshot: snapshot,);
+                    }
+                    else
+                    {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  },
+                )
+              ),
               const SizedBox(height: 32),
               Text
               (
@@ -155,7 +270,31 @@ class _HomeScreenState extends State<HomeScreen>
                 style: GoogleFonts.aBeeZee(fontSize: 20)
               ),
               const SizedBox(height: 10),
-              const ChildrensSlider(),
+              SizedBox
+              (
+                child: FutureBuilder
+                (
+                  future: childrensMovies,
+                  builder:(context, snapshot) 
+                  {
+                    if (snapshot.hasError)
+                    {
+                      return Center
+                      (
+                        child: Text(snapshot.error.toString()),
+                      );
+                    }
+                    else if(snapshot.hasData)
+                    {
+                      return ChildrensSlider(snapshot: snapshot,);
+                    }
+                    else
+                    {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  },
+                )
+              ),
               const SizedBox(height: 32),
               Text
               (
