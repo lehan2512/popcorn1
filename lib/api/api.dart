@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:popcorn1/Models/TVshow.dart';
 import 'package:popcorn1/constants.dart';
 import 'package:popcorn1/Models/movie.dart';
 import 'package:http/http.dart' as http;
@@ -10,23 +8,14 @@ class Api
   static const _trendingMoviesUrl=
   'https://api.themoviedb.org/3/trending/movie/day?api_key=${Constants.apiKey}';
 
-  static const _trendingTVUrl=
-  'https://api.themoviedb.org/3/trending/tv/day?api_key=${Constants.apiKey}';
-
   static const _cinemaUrl=
   'https://api.themoviedb.org/3/movie/now_playing?api_key=${Constants.apiKey}';
-
-  static const _tonightOnTVUrl=
-  'https://api.themoviedb.org/3/tv/airing_today?api_key=${Constants.apiKey}';
 
   static const _grossingMoviesUrl=
   'https://api.themoviedb.org/3/movie/top_rated?api_key=${Constants.apiKey}';
 
-  static const _grossingTVUrl=
-  'https://api.themoviedb.org/3/tv/top_rated?api_key=${Constants.apiKey}';
-
   static const _childrensUrl=
-  'https://api.themoviedb.org/3/trending/tv/day?api_key=${Constants.apiKey}';
+  'https://api.themoviedb.org/3/discover/movie?api_key=${Constants.apiKey}&adult=false&with_genres=16';
 
   Future<List<Movie>> getTrendingMovies() async
   {
@@ -35,20 +24,6 @@ class Api
     {
       final decodedData = jsonDecode(response.body)['results'] as List;
       return decodedData.map((movie) => Movie.fromJson(movie)).toList();
-    }
-    else
-    {
-      throw Exception('Something happened');
-    }
-  }
-
-  Future<List<TV>> getTrendingTV() async
-  {
-    final response = await http.get(Uri.parse(_trendingTVUrl));
-    if (response.statusCode == 200)
-    {
-      final decodedData = jsonDecode(response.body)['results'] as List;
-      return decodedData.map((tvShow) => TV.fromJson(tvShow)).toList();
     }
     else
     {
@@ -70,20 +45,6 @@ class Api
     }
   }
 
-  Future<List<TV>> getTonightOnTV() async
-  {
-    final response = await http.get(Uri.parse(_tonightOnTVUrl));
-    if (response.statusCode == 200)
-    {
-      final decodedData = jsonDecode(response.body)['results'] as List;
-      return decodedData.map((tvShow) => TV.fromJson(tvShow)).toList();
-    }
-    else
-    {
-      throw Exception('Something happened');
-    }
-  }
-
   Future<List<Movie>> getGrossingMovies() async
   {
     final response = await http.get(Uri.parse(_grossingMoviesUrl));
@@ -91,20 +52,6 @@ class Api
     {
       final decodedData = jsonDecode(response.body)['results'] as List;
       return decodedData.map((movie) => Movie.fromJson(movie)).toList();
-    }
-    else
-    {
-      throw Exception('Something happened');
-    }
-  }
-
-  Future<List<TV>> getGrossingTV() async
-  {
-    final response = await http.get(Uri.parse(_grossingTVUrl));
-    if (response.statusCode == 200)
-    {
-      final decodedData = jsonDecode(response.body)['results'] as List;
-      return decodedData.map((tvShow) => TV.fromJson(tvShow)).toList();
     }
     else
     {
