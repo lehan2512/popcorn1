@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Models/movie.dart';
+import '../Widgets/slider widgets/movie_slider.dart';
 import '../api/api.dart';
-import '../widgets/slider widgets/childrens_slider.dart';
-import '../widgets/slider widgets/cinema_slider.dart';
-import '../widgets/slider widgets/grossingMovies_slider.dart';
 import '../widgets/slider widgets/trendingMovies_slider.dart';
 import '../widgets/slider widgets/watched_slider.dart';
 
@@ -63,141 +61,149 @@ class _HomeScreenState extends State<HomeScreen>
             children:
             [
               Text
+                  (
+                    'Trending movies',
+                    style: GoogleFonts.aBeeZee(fontSize: 20),
+                  ),
+              Column
               (
-                'Trending movies',
-                style: GoogleFonts.aBeeZee(fontSize: 20),
+                
+                children: 
+                [
+                  
+                  const SizedBox(height: 15),
+                  SizedBox
+                  (
+                    child: FutureBuilder
+                    (
+                      future: trendingMovies,
+                      builder:(context, snapshot) 
+                      {
+                        if (snapshot.hasError)
+                        {
+                          return Center
+                          (
+                            child: Text(snapshot.error.toString()),
+                          );
+                        }
+                        else if(snapshot.hasData)
+                        {
+                          return TrendingMoviesSlider(snapshot: snapshot,);
+                        }
+                        else
+                        {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                      },
+                    )
+                  ),
+                  const SizedBox(height: 32),
+                ]
               ),
-              const SizedBox(height: 15),
-              SizedBox
-              (
-                child: FutureBuilder
-                (
-                  future: trendingMovies,
-                  builder:(context, snapshot) 
-                  {
-                    if (snapshot.hasError)
-                    {
-                      return Center
-                      (
-                        child: Text(snapshot.error.toString()),
-                      );
-                    }
-                    else if(snapshot.hasData)
-                    {
-                      return TrendingMoviesSlider(snapshot: snapshot,);
-                    }
-                    else
-                    {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                  },
-                )
-              ),
-              const SizedBox(height: 32),
-              Text
-              (
-                "What's on cinema this week",
-                style: GoogleFonts.aBeeZee(fontSize: 20)
-              ),
-              const SizedBox(height: 10),
-              SizedBox
-              (
-                child: FutureBuilder
-                (
-                  future: cinemaMovies,
-                  builder:(context, snapshot) 
-                  {
-                    if (snapshot.hasError)
-                    {
-                      return Center
-                      (
-                        child: Text(snapshot.error.toString()),
-                      );
-                    }
-                    else if(snapshot.hasData)
-                    {
-                      return CinemaSlider(snapshot: snapshot,);
-                    }
-                    else
-                    {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                  },
-                )
-              ),
-              const SizedBox(height: 32),
-              Text
-              (
-                "Highest grossing movies",
-                style: GoogleFonts.aBeeZee(fontSize: 20)
-              ),
-              const SizedBox(height: 10),
-              SizedBox
-              (
-                child: FutureBuilder
-                (
-                  future: grossingMovies,
-                  builder:(context, snapshot) 
-                  {
-                    if (snapshot.hasError)
-                    {
-                      return Center
-                      (
-                        child: Text(snapshot.error.toString()),
-                      );
-                    }
-                    else if(snapshot.hasData)
-                    {
-                      return GrossingMoviesSlider(snapshot: snapshot,);
-                    }
-                    else
-                    {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                  },
-                )
-              ),
-              const SizedBox(height: 32),
-              Text
-              (
-                "Childrens movies",
-                style: GoogleFonts.aBeeZee(fontSize: 20)
-              ),
-              const SizedBox(height: 10),
-              SizedBox
-              (
-                child: FutureBuilder
-                (
-                  future: childrensMovies,
-                  builder:(context, snapshot) 
-                  {
-                    if (snapshot.hasError)
-                    {
-                      return Center
-                      (
-                        child: Text(snapshot.error.toString()),
-                      );
-                    }
-                    else if(snapshot.hasData)
-                    {
-                      return ChildrensSlider(snapshot: snapshot,);
-                    }
-                    else
-                    {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                  },
-                )
-              ),
-              const SizedBox(height: 32),
-              Text
-              (
-                "Watched again",
-                style: GoogleFonts.aBeeZee(fontSize: 20)
-              ),
-              const SizedBox(height: 10),
-              const WatchedSlider(),
-            ],
+                  Text
+                  (
+                    "What's on cinema this week",
+                    style: GoogleFonts.aBeeZee(fontSize: 20)
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox
+                  (
+                    child: FutureBuilder
+                    (
+                      future: cinemaMovies,
+                      builder:(context, snapshot) 
+                      {
+                        if (snapshot.hasError)
+                        {
+                          return Center
+                          (
+                            child: Text(snapshot.error.toString()),
+                          );
+                        }
+                        else if(snapshot.hasData)
+                        {
+                          return MovieSlider(snapshot: snapshot,);
+                        }
+                        else
+                        {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                      },
+                    )
+                  ),
+                  const SizedBox(height: 32),
+                  Text
+                  (
+                    "Highest grossing movies",
+                    style: GoogleFonts.aBeeZee(fontSize: 20)
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox
+                  (
+                    child: FutureBuilder
+                    (
+                      future: grossingMovies,
+                      builder:(context, snapshot) 
+                      {
+                        if (snapshot.hasError)
+                        {
+                          return Center
+                          (
+                            child: Text(snapshot.error.toString()),
+                          );
+                        }
+                        else if(snapshot.hasData)
+                        {
+                          return MovieSlider(snapshot: snapshot,);
+                        }
+                        else
+                        {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                      },
+                    )
+                  ),
+                  const SizedBox(height: 32),
+                  Text
+                  (
+                    "Childrens movies",
+                    style: GoogleFonts.aBeeZee(fontSize: 20)
+                  ),
+                  const SizedBox(height: 10),
+                  SizedBox
+                  (
+                    child: FutureBuilder
+                    (
+                      future: childrensMovies,
+                      builder:(context, snapshot) 
+                      {
+                        if (snapshot.hasError)
+                        {
+                          return Center
+                          (
+                            child: Text(snapshot.error.toString()),
+                          );
+                        }
+                        else if(snapshot.hasData)
+                        {
+                          return MovieSlider(snapshot: snapshot,);
+                        }
+                        else
+                        {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                      },
+                    )
+                  ),
+                  const SizedBox(height: 32),
+                  Text
+                  (
+                    "Watched again",
+                    style: GoogleFonts.aBeeZee(fontSize: 20)
+                  ),
+                  const SizedBox(height: 10),
+                  const WatchedSlider(),
+                ],
           ),
         )
       )

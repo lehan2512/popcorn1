@@ -1,5 +1,6 @@
 class Movie
 {
+  int id;
   String title;
   String backdropPath;
   String overview;
@@ -11,6 +12,7 @@ class Movie
   Movie
   (
     {
+      required this.id,
       required this.title,
       required this.backdropPath,
       required this.overview,
@@ -25,6 +27,7 @@ class Movie
   {
     return Movie
     (
+      id: json["id"] as int,
       title: json["title"].toString(),
       backdropPath: json["backdrop_path"].toString(),
       overview: json["overview"].toString(),

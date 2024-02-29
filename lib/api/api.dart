@@ -17,6 +17,9 @@ class Api
   static const _childrensUrl=
   'https://api.themoviedb.org/3/discover/movie?api_key=${Constants.apiKey}&adult=false&with_genres=16';
 
+  
+  
+
   Future<List<Movie>> getTrendingMovies() async
   {
     final response = await http.get(Uri.parse(_trendingMoviesUrl));
@@ -72,4 +75,6 @@ class Api
       throw Exception('Something happened');
     }
   }
+
+  
 }
