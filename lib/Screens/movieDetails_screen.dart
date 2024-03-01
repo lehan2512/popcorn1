@@ -21,11 +21,12 @@ class MovieDetailsScreen extends StatefulWidget
 class _MovieDetailsState extends State<MovieDetailsScreen>
 {
   late Future<List<Movie>> similarMovies;
-  List MoviesGeneres = [];
+  List<String> moviesGeneres = [];
+  late String runTime = '';
 
   Future<List<Movie>> getSimilarMovies() async
   {
-    var _similarMoviesUrl = 'https://api.themoviedb.org/3/movie/${widget.movie.id}/similar?api_key=${Constants.apiKey}';
+    var _similarMoviesUrl = 'https://api.themoviedb.org/3/movie/${widget.movie.id}/similar?api_key=${Constants.apiKey}&sort_by=popularity.desc';
 
     final response = await http.get(Uri.parse(_similarMoviesUrl));
     if (response.statusCode == 200)
@@ -39,9 +40,30 @@ class _MovieDetailsState extends State<MovieDetailsScreen>
     }
   }
 
+  Future movieGenres() async
+  {
+    var _movieDetailsUrl = 'https://api.themoviedb.org/3/movie/${widget.movie.id}?api_key=${Constants.apiKey}';
+
+    var moviedetailresponse = await http.get(Uri.parse(_movieDetailsUrl));
+    if (moviedetailresponse.statusCode == 200)
+    {
+      var moviedetailjson = jsonDecode(moviedetailresponse.body);
+
+      runTime = moviedetailjson['runtime'].toString();
+
+      for (var i = 0; i < moviedetailjson['genres'].length; i++) 
+      {
+        moviesGeneres.add(moviedetailjson['genres'][i]['name']);
+      }
+      print('MoviesGeneres: $moviesGeneres');
+    } else {}
+
+  }
+
   @override
   void initState() {
     super.initState();
+    movieGenres();
     similarMovies = getSimilarMovies();
   }
 
@@ -116,6 +138,33 @@ class _MovieDetailsState extends State<MovieDetailsScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children:
                 [
+                  Container(
+                        padding: const EdgeInsets.only(left: 10, top: 10),
+                        child: SizedBox(
+                          height: 50,
+                          width: MediaQuery.of(context).size.width,
+                          child: ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: moviesGeneres.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                    margin: const EdgeInsets.only(right: 10),
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        color: const Color.fromRGBO(25, 25, 25, 1),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Text(
+                                      moviesGeneres[index],
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14, // Adjust the font size here
+                                      ),
+                                    ));
+                              }),
+                        ),
+                      ),
                   Text
                   (
                     'Overview',
@@ -136,6 +185,31 @@ class _MovieDetailsState extends State<MovieDetailsScreen>
                     ),
                   ),
                   const SizedBox(height: 20),
+                  Row
+                  (
+                    children: 
+                    [
+                      Text
+                      (
+                        'Duration: ',
+                        style: GoogleFonts.roboto
+                        (
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold
+                        )
+                      ),
+                      Text
+                      (
+                        runTime,
+                        style: GoogleFonts.roboto
+                        (
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold
+                        )
+                      )
+                    ]
+                  ),
+                  const SizedBox(height: 5),
                   Row
                   (
                     children: 
@@ -186,12 +260,6 @@ class _MovieDetailsState extends State<MovieDetailsScreen>
                     ]
                   ),
                   const SizedBox(height: 32),
-                  Text
-                  (
-                    "Similar Movies",
-                    style: GoogleFonts.aBeeZee(fontSize: 20)
-                  ),
-                  const SizedBox(height: 10),
                   SizedBox
                   (
                     child: FutureBuilder
@@ -208,7 +276,12 @@ class _MovieDetailsState extends State<MovieDetailsScreen>
                         }
                         else if(snapshot.hasData)
                         {
-                          return MovieSlider(snapshot: snapshot,);
+                          return MovieSlider
+                          (
+                            snapshot: snapshot,
+                            categorytittle: "Similar movies",
+                            itemlength: snapshot.data!.length
+                          );
                         }
                         else
                         {

@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:popcorn1/Screens/movieDetails_screen.dart';
 import 'package:popcorn1/constants.dart';
 
-class MovieSlider extends StatelessWidget {
-  const MovieSlider({
-    super.key, required this.snapshot,
-  });
+class MovieSlider extends StatelessWidget 
+{
+  final AsyncSnapshot snapshot;
+  final String categorytittle;
+  final int itemlength;
 
-final AsyncSnapshot snapshot;
+  const MovieSlider
+  (
+    {super.key, 
+      required this.snapshot,
+      required this.categorytittle,
+      required this.itemlength,
+    }
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -16,69 +25,74 @@ final AsyncSnapshot snapshot;
       crossAxisAlignment: CrossAxisAlignment.start,
       children:
       [
-        Container
-        (
-          height: 200,
-          child: ListView.builder
-      (
-        physics: const BouncingScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        itemCount: snapshot.data.length,
-        itemBuilder: (context, index) 
-        {
-          return Padding
+        Column(crossAxisAlignment: CrossAxisAlignment.start,
+        children: 
+        [
+          Padding
           (
-            padding: const EdgeInsets.all(8.0),
-            child: GestureDetector
+            padding: const EdgeInsets.only(left: 10.0, top: 15, bottom: 10),
+            child: 
+            Text
             (
-              onTap: ()
+              categorytittle,
+              style: GoogleFonts.aBeeZee(fontSize: 20),
+            )
+          ),
+          Container
+          (
+            height: 250,
+            child: ListView.builder
+            (
+              physics: BouncingScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              itemCount: itemlength,
+              itemBuilder: (context, index)
               {
-                Navigator.push
+                return GestureDetector
                 (
-                  context,
-                  MaterialPageRoute
-                  (
-                    builder: (context) => MovieDetailsScreen
+                  onTap: ()
+                  {
+                    Navigator.push
                     (
-                      movie: snapshot.data[index]
-                    )
-                  )
-                );
-              },
-              child: Column(
-                children: 
-                [
-                  ClipRect
-                  (
-                    child: SizedBox
-                    (
-                      height: 150,
-                      width: 150,
-                      child: Image.network(
-                        '${Constants.imagePath}${snapshot.data[index].posterPath}',
-                        filterQuality: FilterQuality.high,
-                        fit: BoxFit.cover,
+                      context,
+                      MaterialPageRoute
+                      (
+                        builder: (context) => MovieDetailsScreen
+                        (
+                          movie: snapshot.data[index]
+                        )
+                      )
+                    );
+                  },
+                  child: Container(
+                  margin: EdgeInsets.only(left: 13),
+                  width:150,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          image: DecorationImage(
+                            image: NetworkImage(
+                              '${Constants.imagePath}${snapshot.data[index].posterPath}',
+                            ),
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        height: 200, // Adjust as needed
+                        width: 150,
                       ),
-                    ),
+                    ],
                   ),
-                  const SizedBox(height: 8),
-                  Text
-                  (
-                    snapshot.data[index].title,
-                    style: TextStyle(
-                      fontSize: 13,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-        )
-      
-      
-      
-    ]);
+                ),
+                );
+              }
+            )
+          ),
+        ]
+        ) 
+      ]
+    );
   }
 }
