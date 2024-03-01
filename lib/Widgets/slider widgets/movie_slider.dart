@@ -82,6 +82,7 @@ class MovieSlider extends StatelessWidget
                         ),
                         height: 200, // Adjust as needed
                         width: 150,
+                        
                       ),
                     ],
                   ),

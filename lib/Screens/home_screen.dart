@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:popcorn1/Screens/search_screen.dart';
-import 'package:popcorn1/Widgets/searchBar.dart';
 import '../Models/movie.dart';
 import '../Widgets/slider widgets/movie_slider.dart';
 import '../api/api.dart';
@@ -203,18 +202,3 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

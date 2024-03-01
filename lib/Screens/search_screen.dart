@@ -1,25 +1,22 @@
-import 'package:popcorn1/Widgets/searchBar.dart';
 import 'package:flutter/material.dart';
+import 'package:popcorn1/Widgets/searchBar.dart';
 
-
-class SearchScreen extends StatelessWidget 
-{
+class SearchScreen extends StatelessWidget {
   @override
-  Widget build(BuildContext context) 
-  {
-    return Scaffold
-    (
-      appBar: AppBar
-      (
-        title: Text('Search'),
-        leading: IconButton
-        (
-          icon: Icon(Icons.arrow_back),
-          onPressed: () 
-          {
-            Navigator.pop(context);
-          },
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: Container(
+          margin: const EdgeInsets.only(top: 16, left: 16),
+          child: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          ),
         ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
       body: searchBarFunc(),
     );

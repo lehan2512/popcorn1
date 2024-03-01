@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'Screens/home_screen.dart';
+import 'Screens/splash_screen.dart';
 import 'colours.dart';
+
 
 void main() 
 {
@@ -23,8 +24,8 @@ class MyApp extends StatelessWidget
         scaffoldBackgroundColor: Colours.scaffoldBgColour,
         useMaterial3: true,
       ),
-      home: const HomeScreen(),
-    );
+      home: SplashScreen()
+      );
   }
 }
 
