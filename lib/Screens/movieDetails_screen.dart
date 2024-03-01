@@ -28,42 +28,31 @@ class _MovieDetailsState extends State<MovieDetailsScreen>
   {
     var _similarMoviesUrl = 'https://api.themoviedb.org/3/movie/${widget.movie.id}/similar?api_key=${Constants.apiKey}&sort_by=popularity.desc';
 
-    final response = await http.get(Uri.parse(_similarMoviesUrl));
-    if (response.statusCode == 200)
+    try 
     {
-      final decodedData = jsonDecode(response.body)['results'] as List;
-      return decodedData.map((movie) => Movie.fromJson(movie)).toList();
-    }
-    else
-    {
-      throw Exception('Something happened');
-    }
-  }
-
-  Future movieGenres() async
-  {
-    var _movieDetailsUrl = 'https://api.themoviedb.org/3/movie/${widget.movie.id}?api_key=${Constants.apiKey}';
-
-    var moviedetailresponse = await http.get(Uri.parse(_movieDetailsUrl));
-    if (moviedetailresponse.statusCode == 200)
-    {
-      var moviedetailjson = jsonDecode(moviedetailresponse.body);
-
-      runTime = moviedetailjson['runtime'].toString();
-
-      for (var i = 0; i < moviedetailjson['genres'].length; i++) 
+      final response = await http.get(Uri.parse(_similarMoviesUrl));
+      if (response.statusCode == 200) 
       {
-        moviesGeneres.add(moviedetailjson['genres'][i]['name']);
+        final decodedData = jsonDecode(response.body)['results'] as List;
+        return decodedData.map((movie) => Movie.fromJson(movie)).toList();
+      } 
+      else 
+      {
+        print('Failed to load similar movies. Status code: ${response.statusCode}');
+        throw Exception('Failed to load similar movies');
       }
-      print('MoviesGeneres: $moviesGeneres');
-    } else {}
-
+    } 
+    catch (error) 
+    {
+      // Handle other types of errors
+      print('Error fetching similar movies: $error');
+      throw Exception('Error fetching similar movies');
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    movieGenres();
     similarMovies = getSimilarMovies();
   }
 
@@ -141,30 +130,31 @@ class _MovieDetailsState extends State<MovieDetailsScreen>
                   Container(
                         padding: const EdgeInsets.only(left: 10, top: 10),
                         child: SizedBox(
-                          height: 50,
+                          height: 35,
                           width: MediaQuery.of(context).size.width,
                           child: ListView.builder(
                               physics: const BouncingScrollPhysics(),
                               scrollDirection: Axis.horizontal,
-                              itemCount: moviesGeneres.length,
+                              itemCount: widget.movie.genreNames.length,
                               itemBuilder: (context, index) {
                                 return Container(
                                     margin: const EdgeInsets.only(right: 10),
                                     padding: const EdgeInsets.all(10),
                                     decoration: BoxDecoration(
-                                        color: const Color.fromRGBO(25, 25, 25, 1),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
+                                        color: Color.fromARGB(255, 82, 82, 82),
+                                        borderRadius:BorderRadius.circular(10)
+                                        ),
                                     child: Text(
-                                      moviesGeneres[index],
+                                      widget.movie.genreNames[index],
                                       style: const TextStyle(
                                         color: Colors.white,
-                                        fontSize: 14, // Adjust the font size here
+                                        fontSize: 14,
                                       ),
                                     ));
                               }),
                         ),
                       ),
+                  const SizedBox(height: 20),
                   Text
                   (
                     'Overview',
@@ -174,7 +164,7 @@ class _MovieDetailsState extends State<MovieDetailsScreen>
                       fontWeight: FontWeight.w800
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 10),
                   Text
                   (
                     widget.movie.overview,
@@ -185,31 +175,6 @@ class _MovieDetailsState extends State<MovieDetailsScreen>
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Row
-                  (
-                    children: 
-                    [
-                      Text
-                      (
-                        'Duration: ',
-                        style: GoogleFonts.roboto
-                        (
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold
-                        )
-                      ),
-                      Text
-                      (
-                        runTime,
-                        style: GoogleFonts.roboto
-                        (
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold
-                        )
-                      )
-                    ]
-                  ),
-                  const SizedBox(height: 5),
                   Row
                   (
                     children: 
@@ -267,7 +232,11 @@ class _MovieDetailsState extends State<MovieDetailsScreen>
                       future: similarMovies,
                       builder:(context, snapshot) 
                       {
-                        if (snapshot.hasError)
+                        if (snapshot.connectionState == ConnectionState.waiting)
+                        {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        else if (snapshot.hasError)
                         {
                           return Center
                           (
