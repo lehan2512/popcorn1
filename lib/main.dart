@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:popcorn1/Screens/login_screen.dart';
 import 'Screens/splash_screen.dart';
 import 'colours.dart';
 
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget
         scaffoldBackgroundColor: Colours.scaffoldBgColour,
         useMaterial3: true,
       ),
-      home: SplashScreen()
+      home: LoginScreen()
       );
   }
 }

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:popcorn1/Screens/home_screen.dart';
 import 'package:popcorn1/Screens/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MyApp());
@@ -24,26 +26,38 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    _checkRememberMe();
+  }
+
+  void _checkRememberMe() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool rememberMe = prefs.getBool('rememberMe') ?? false;
+
     // Add a delay to simulate the splash screen duration
     Timer(Duration(seconds: 1), () {
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => LoginScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = 0.0;
-            const end = 1.0;
-            var opacityTween = Tween<double>(begin: begin, end: end);
-            var opacityAnimation = opacityTween.animate(animation);
-            return FadeTransition(
-              opacity: opacityAnimation,
-              child: child,
-            );
-          },
-          transitionDuration: Duration(milliseconds: 500),
-        ),
-      );
+      _navigateToScreen(rememberMe);
     });
+  }
+
+  void _navigateToScreen(bool rememberMe) {
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            rememberMe ? HomeScreen() : LoginScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = 0.0;
+          const end = 1.0;
+          var opacityTween = Tween<double>(begin: begin, end: end);
+          var opacityAnimation = opacityTween.animate(animation);
+          return FadeTransition(
+            opacity: opacityAnimation,
+            child: child,
+          );
+        },
+        transitionDuration: Duration(milliseconds: 500),
+      ),
+    );
   }
 
   @override

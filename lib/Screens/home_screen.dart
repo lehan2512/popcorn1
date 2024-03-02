@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:popcorn1/Screens/login_screen.dart';
 import 'package:popcorn1/Screens/search_screen.dart';
 import '../Models/movie.dart';
 import '../Widgets/slider widgets/movie_slider.dart';
@@ -99,15 +100,28 @@ class _HomeScreenState extends State<HomeScreen>
                   const SizedBox(height: 32),
                 ]
               ),
-              IconButton(
-                icon: Icon(Icons.search),
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () {
+                      // Navigate to the search screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SearchScreen()),
+                      );
+                    },
+                  ),
+                  IconButton(
+                icon: Icon(Icons.logout),
                 onPressed: () {
-                  // Navigate to the search screen
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => SearchScreen()),
-                  );
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  ); // Go back to the login screen
                 },
+              ),
+                ],
               ),
               //Cinema movies
               FutureBuilder

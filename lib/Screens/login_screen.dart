@@ -1,18 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:popcorn1/screens/home_screen.dart';
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: LoginScreen(),
-    );
-  }
-}
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -20,17 +8,58 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController _emailController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  bool _rememberMe = false;
 
-  void _login(BuildContext context) {
+  @override
+  void initState() {
+    super.initState();
+    // Check local storage for rememberMe setting
+    _checkRememberMe();
+  }
+
+  Future<void> _checkRememberMe() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool rememberMe = prefs.getBool('rememberMe') ?? false;
+    if (rememberMe) {
+      // If rememberMe is true, set the checkbox value and fill in the username
+      setState(() {
+        _rememberMe = true;
+        _usernameController.text = prefs.getString('username') ?? '';
+        _passwordController.text = prefs.getString('password') ?? '';
+        // Password should not be stored in plain text for security reasons,
+        // so you may not automatically fill the password field.
+      });
+    }
+  }
+
+  Future<void> _login(BuildContext context) async {
     // Perform login logic here
     // For simplicity, just printing the email and password
-    print("Username: ${_emailController.text}");
+    print("Username: ${_usernameController.text}");
     print("Password: ${_passwordController.text}");
 
     // Check if the login is successful (You can replace this with your actual authentication logic)
     bool loginSuccessful = true; // Replace this with your authentication logic
+
+    // Get the existing SharedPreferences instance
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if (_rememberMe) {
+      // Save the "Remember Me" setting and username in local storage
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setBool('rememberMe', _rememberMe);
+      prefs.setString('username', _usernameController.text);
+      prefs.setString('password', _passwordController.text);
+      // Password should not be stored in plain text for security reasons.
+      // You may implement more secure solutions like token-based authentication.
+    } else {
+    // If "Remember Me" is not checked, erase the data in local storage
+      prefs.remove('rememberMe');
+      prefs.remove('username');
+      prefs.remove('password');
+    }
 
     if (loginSuccessful) {
       // Navigate to the HomeScreen and replace the login screen in the navigation stack
@@ -62,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Container(
                 width: textFieldWidth,
                 child: TextField(
-                  controller: _emailController,
+                  controller: _usernameController,
                   decoration: InputDecoration(
                     labelText: 'Username',
                     border: OutlineInputBorder(
@@ -81,16 +110,34 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: InputDecoration(
                     labelText: 'Password',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(18)
+                      borderRadius: BorderRadius.circular(18),
                     ),
                     contentPadding: EdgeInsets.symmetric(horizontal: 20),
                   ),
                 ),
               ),
-              SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: () => _login(context),
-                child: Text('Login'),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _rememberMe,
+                        onChanged: (value) {
+                          setState(() {
+                            _rememberMe = value ?? false;
+                          });
+                        },
+                      ),
+                      Text('Remember Me'),
+                    ],
+                  ),
+                  ElevatedButton(
+                    onPressed: () => _login(context),
+                    child: Text('Login'),
+                  ),
+                ],
               ),
             ],
           ),
@@ -99,4 +146,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
