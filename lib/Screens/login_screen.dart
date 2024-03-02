@@ -40,6 +40,18 @@ class _LoginScreenState extends State<LoginScreen> {
     print("Username: ${_usernameController.text}");
     print("Password: ${_passwordController.text}");
 
+    // Check if the username and password are filled
+  if (_usernameController.text.isEmpty || _passwordController.text.isEmpty) {
+    // Show an alert or snackbar indicating that both username and password are required
+    // For simplicity, showing a snackbar here
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Both username and password are required.'),
+      ),
+    );
+    return; // Exit the method if either username or password is empty
+    }
+
     // Check if the login is successful (You can replace this with your actual authentication logic)
     bool loginSuccessful = true; // Replace this with your authentication logic
 
