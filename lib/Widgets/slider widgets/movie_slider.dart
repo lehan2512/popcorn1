@@ -38,9 +38,10 @@ class MovieSlider extends StatelessWidget
               style: GoogleFonts.aBeeZee(fontSize: 20),
             )
           ),
-          Container
+          SizedBox
           (
             height: 250,
+            width: double.infinity,
             child: ListView.builder
             (
               physics: BouncingScrollPhysics(),
@@ -48,45 +49,49 @@ class MovieSlider extends StatelessWidget
               itemCount: itemlength,
               itemBuilder: (context, index)
               {
-                return GestureDetector
+                return Padding
                 (
-                  onTap: ()
-                  {
-                    Navigator.push
-                    (
-                      context,
-                      MaterialPageRoute
+                  padding: const EdgeInsets.all(8),
+                  child: GestureDetector
+                  (
+                    onTap: ()
+                    {
+                      Navigator.push
                       (
-                        builder: (context) => MovieDetailsScreen
+                        context,
+                        MaterialPageRoute
                         (
-                          movie: snapshot.data[index]
+                          builder: (context) => MovieDetailsScreen
+                          (
+                            movie: snapshot.data[index]
+                          )
                         )
-                      )
-                    );
-                  },
-                  child: Container(
-                  margin: EdgeInsets.only(left: 13),
-                  width:150,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          image: DecorationImage(
-                            image: NetworkImage(
-                              '${Constants.imagePath}${snapshot.data[index].posterPath}',
+                      );
+                    },
+                    child: Container(
+                    margin: EdgeInsets.only(left: 13),
+                    width:150,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            image: DecorationImage(
+                              image: NetworkImage(
+                                '${Constants.imagePath}${snapshot.data[index].posterPath}',
+                              ),
+                              fit: BoxFit.contain,
                             ),
-                            fit: BoxFit.contain,
                           ),
+                          height: 200, // Adjust as needed
+                          width: 150,
+                          
                         ),
-                        height: 200, // Adjust as needed
-                        width: 150,
-                        
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
+                  ),
                 );
               }
             )
