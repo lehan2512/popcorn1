@@ -132,7 +132,7 @@ class _MovieDetailsState extends State<MovieDetailsScreen>
                   Container(
                         padding: const EdgeInsets.only(left: 10, top: 10),
                         child: SizedBox(
-                          height: 35,
+                          height: 38,
                           width: MediaQuery.of(context).size.width,
                           child: ListView.builder(
                               physics: const BouncingScrollPhysics(),

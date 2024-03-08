@@ -20,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen>
 {
   late Future<List<Movie>> trendingMovies;
   late Future<List<Movie>> cinemaMovies;
+  late Future<List<Movie>> bestMovies;
   late Future<List<Movie>> grossingMovies;
   late Future<List<Movie>> childrensMovies;
 
@@ -37,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
     trendingMovies = Api().getTrendingMovies();
     cinemaMovies = Api().getCinemaMovies();
+    bestMovies = Api().getBestMovies();
     grossingMovies = Api().getGrossingMovies();
     childrensMovies = Api().getChildrensMovies();
   }
@@ -180,6 +182,35 @@ class _HomeScreenState extends State<HomeScreen>
                     (
                       snapshot: snapshot,
                       categorytittle: "Highest grossing movies of all time",
+                      itemlength: snapshot.data!.length
+                    );
+                  }
+                  else
+                  {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                },
+              ),
+              const SizedBox(height: 32),
+              //Best movies this year
+              FutureBuilder
+              (
+                future: bestMovies,
+                builder:(context, snapshot) 
+                {
+                  if (snapshot.hasError)
+                  {
+                    return Center
+                    (
+                      child: Text(snapshot.error.toString()),
+                    );
+                  }
+                  else if(snapshot.hasData)
+                  {
+                    return MovieSlider
+                    (
+                      snapshot: snapshot,
+                      categorytittle: "Best movies this year",
                       itemlength: snapshot.data!.length
                     );
                   }
