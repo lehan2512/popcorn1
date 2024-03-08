@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:popcorn1/Screens/login_screen.dart';
 import 'package:popcorn1/colours.dart';
-import 'package:popcorn1/screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -16,39 +16,14 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _rememberMe = false;
-  bool loginSuccessful = false;
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  bool registerSuccessful = false;
 
-  @override
-  void initState() {
-    super.initState();
-    // Check local storage for rememberMe setting
-    _checkRememberMe();
-  }
-
-  //autofill
-  Future<void> _checkRememberMe() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool rememberMe = prefs.getBool('rememberMe') ?? false;
-    if (rememberMe) {
-      // If rememberMe is true, set the checkbox value and fill in the username
-      setState(() {
-        _rememberMe = true;
-        _emailController.text = prefs.getString('email') ?? '';
-        _passwordController.text = prefs.getString('password') ?? '';
-        // Password should not be stored in plain text for security reasons,
-        // so you may not automatically fill the password field.
-      });
-    }
-  }
-
-  Future<void> _login(BuildContext context) async {
-    // Perform login logic here
+  Future<void> _register(BuildContext context) async {
     // For simplicity, just printing the email and password
     print("email: ${_emailController.text}");
     print("Password: ${_passwordController.text}");
 
-    // Check if the username and password are filled
   if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
     // Show an alert or snackbar indicating that both username and password are required
     // For simplicity, showing a snackbar here
@@ -62,30 +37,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     await _userAuthentication(context);
     
-    // Get the existing SharedPreferences instance
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    if ((_rememberMe) && (loginSuccessful))
-    {
-      // Save the "Remember Me" setting and username in local storage
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setBool('rememberMe', _rememberMe);
-      prefs.setString('email', _emailController.text);
-      prefs.setString('password', _passwordController.text);
-      // Password should not be stored in plain text for security reasons.
-      // You may implement more secure solutions like token-based authentication.
-    } else {
-    // If "Remember Me" is not checked, erase the data in local storage
-      prefs.remove('rememberMe');
-      prefs.remove('email');
-      prefs.remove('password');
-    }
-
-    if (loginSuccessful) {
+    if (registerSuccessful) {
       // Navigate to the HomeScreen and replace the login screen in the navigation stack
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
       );
     }
   }
@@ -102,14 +58,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
       );
   try {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: _emailController.text,
-      password: _passwordController.text,
-    );
-
+    if (_passwordController.text == _confirmPasswordController.text)
+    {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+    }
+    else
+    {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Passwords don't match"),
+        ),
+      );    
+    }
+    
     // If the above line is executed without any errors, authentication is successful
     setState(() {
-      loginSuccessful = true;
+      registerSuccessful = true;
     });
   } catch (e) {
     // If there's an error during authentication, show a message and set loginSuccessful to false
@@ -120,7 +87,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
     setState(() {
-      loginSuccessful = false;
+      registerSuccessful = false;
     });
   }
 
@@ -175,25 +142,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Row(
-                      children: [
-                        Checkbox(
-                          value: _rememberMe,
-                          onChanged: (value) {
-                            setState(() {
-                              _rememberMe = value ?? false;
-                            });
-                          },
-                        ),
-                        const Text('Remember Me'),
-                      ],
-                ),
+                Container(
+                  width: textFieldWidth,
+                  child: TextField(
+                    controller: _confirmPasswordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Confirm Password',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                    ),
+                  ),
+                ),               
                 const SizedBox(height: 20),
                 Center( // Center the ElevatedButton
                     child: Container(
                       width: textFieldWidth, // Set the width if you want a fixed width
                       child: ElevatedButton(
-                        onPressed: () => _login(context),
+                        onPressed: () => _register(context),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colours.themeColour,
                           padding: const EdgeInsets.symmetric(
@@ -202,7 +170,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                         child: const Text(
-                          'Login',
+                          'Register',
                           style: TextStyle(
                             fontSize: 18,
                             color: Colours.scaffoldBgColour,
@@ -217,7 +185,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      'New user?',
+                      'Already registered?',
                       style: TextStyle(color: Colors.white),
                     ),
                     SizedBox(width: 7),
@@ -225,11 +193,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => RegisterScreen()),
+                          MaterialPageRoute(builder: (context) => const LoginScreen()),
                         );
                       },
                       child: const Text(
-                        'Register now',
+                        'Login',
                         style: TextStyle(
                           color: Colours.themeColour,
                           fontWeight: FontWeight.bold,
