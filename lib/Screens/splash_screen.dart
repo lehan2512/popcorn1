@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
     bool rememberMe = prefs.getBool('rememberMe') ?? false;
 
     // Add a delay to simulate the splash screen duration
-    Timer(const Duration(seconds: 5), () {
+    Timer(const Duration(seconds: 1), () {
       _navigateToScreen(rememberMe);
     });
   }

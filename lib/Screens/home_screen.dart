@@ -1,8 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:popcorn1/Screens/login_screen.dart';
 import 'package:popcorn1/Screens/search_screen.dart';
-import 'package:popcorn1/Widgets/slider%20widgets/working_slider.dart';
 import '../Models/movie.dart';
 import '../Widgets/slider widgets/movie_slider.dart';
 import '../api/api.dart';
@@ -22,6 +22,14 @@ class _HomeScreenState extends State<HomeScreen>
   late Future<List<Movie>> cinemaMovies;
   late Future<List<Movie>> grossingMovies;
   late Future<List<Movie>> childrensMovies;
+
+  final user = FirebaseAuth.instance.currentUser!;
+
+  //sign user out method
+  void signUserOut()
+  {
+    FirebaseAuth.instance.signOut();
+  }
 
   @override
   void initState()
@@ -171,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen>
                     return MovieSlider
                     (
                       snapshot: snapshot,
-                      categorytittle: "Highest grossing movies",
+                      categorytittle: "Highest grossing movies of all time",
                       itemlength: snapshot.data!.length
                     );
                   }

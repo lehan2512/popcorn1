@@ -23,10 +23,12 @@ class _MovieDetailsState extends State<MovieDetailsScreen>
   late Future<List<Movie>> similarMovies;
   List<String> moviesGeneres = [];
   late String runTime = '';
+  bool addToWatchlist = false;
 
   Future<List<Movie>> getSimilarMovies() async
   {
-    var _similarMoviesUrl = 'https://api.themoviedb.org/3/movie/${widget.movie.id}/similar?api_key=${Constants.apiKey}&sort_by=popularity.desc';
+    var _similarMoviesUrl = 'https://api.themoviedb.org/3/movie/${widget.movie.id}/recommendations?api_key=${Constants.apiKey}&sort_by=popularity.desc';
+    //https://api.themoviedb.org/3/movie/${widget.movie.id}/recommendations?api_key=${Constants.apiKey}&sort_by=popularity.desc
 
     try 
     {
@@ -181,6 +183,59 @@ class _MovieDetailsState extends State<MovieDetailsScreen>
                     [
                       Text
                       (
+                        'Cast: ',
+                        style: GoogleFonts.roboto
+                        (
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Expanded
+                      (
+                        child: FutureBuilder
+                        (
+                          future: fetchMainCharacters(widget.movie.id),
+                          builder: (context, snapshot)
+                          {
+                            if (snapshot.connectionState == ConnectionState.waiting) 
+                            {
+                              return Center(child: CircularProgressIndicator());
+                            } 
+                            else if (snapshot.hasError) 
+                            {
+                              return Center
+                              (
+                                child: Text(snapshot.error.toString()),
+                              );
+                            }
+                            else if (snapshot.hasData) 
+                            {
+                              // Display the cast names
+                              return Text
+                              (
+                                snapshot.data!.join(', '),
+                                style: GoogleFonts.roboto
+                                (
+                                  fontSize: 12,
+                                ),
+                              );
+                            } 
+                            else
+                            {
+                              return const Center(child: CircularProgressIndicator());
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Row
+                  (
+                    children: 
+                    [
+                      Text
+                      (
                         'Release date: ',
                         style: GoogleFonts.roboto
                         (
@@ -194,7 +249,6 @@ class _MovieDetailsState extends State<MovieDetailsScreen>
                         style: GoogleFonts.roboto
                         (
                           fontSize: 12,
-                          fontWeight: FontWeight.bold
                         )
                       )
                     ]
@@ -219,11 +273,19 @@ class _MovieDetailsState extends State<MovieDetailsScreen>
                         style: GoogleFonts.roboto
                         (
                           fontSize: 12,
-                          fontWeight: FontWeight.bold
                         )
                       )
                     ]
                   ),
+                  CheckboxListTile(
+  title: Text('Add to Watchlist'),
+  value: addToWatchlist,
+  onChanged: (value) {
+    setState(() {
+      addToWatchlist = value!;
+    });
+  },
+),
                   const SizedBox(height: 32),
                   SizedBox
                   (

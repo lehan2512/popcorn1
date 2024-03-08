@@ -6,20 +6,18 @@ import 'package:popcorn1/colours.dart';
 import 'package:popcorn1/screens/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'register_screen.dart';
-
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _rememberMe = false;
-  bool loginSuccessful = true;
+  bool loginSuccessful = false;
 
   @override
   void initState() {
@@ -227,7 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                          MaterialPageRoute(builder: (context) => RegisterScreen()),
                         );
                       },
                       child: const Text(

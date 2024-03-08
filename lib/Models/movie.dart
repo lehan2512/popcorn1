@@ -1,3 +1,8 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+import 'package:popcorn1/constants.dart';
+
 class Movie
 {
   int id;
@@ -48,6 +53,32 @@ class Movie
 
   static List<String> extractGenreNames(List<int> genreIds) {
     return genreIds.map((id) => GenreMapping.genreNames[id] ?? 'Unknown').toList();
+  }
+}
+
+Future<List<String>> fetchMainCharacters(int movieId) async {
+  final apiUrl = 'https://api.themoviedb.org/3/movie/$movieId/credits?api_key=${Constants.apiKey}';
+
+  try {
+    final response = await http.get(Uri.parse(apiUrl));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      final List<dynamic> castList = data['cast'];
+
+      // Filter and take the first 5 main characters based on a condition (e.g., significant role)
+      final List<String> mainCharacters = castList
+          .where((actor) => actor['known_for_department'] == 'Acting') // Adjust the condition as needed
+          .take(5) // Limit to the first 5 names
+          .map((actor) => actor['name'].toString())
+          .toList();
+
+      return mainCharacters;
+    } else {
+      throw Exception('Failed to load cast');
+    }
+  } catch (e) {
+    throw Exception('Error fetching cast: $e');
   }
 }
 
