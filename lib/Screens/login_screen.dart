@@ -43,15 +43,12 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _login(BuildContext context) async {
-    // Perform login logic here
-    // For simplicity, just printing the email and password
     print("email: ${_emailController.text}");
     print("Password: ${_passwordController.text}");
 
     // Check if the username and password are filled
   if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
     // Show an alert or snackbar indicating that both username and password are required
-    // For simplicity, showing a snackbar here
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Both email and password are required.'),

@@ -4,8 +4,7 @@ import 'package:popcorn1/Screens/home_screen.dart';
 import 'package:popcorn1/Screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() 
-{
+void main() {
   runApp(MyApp());
 }
 

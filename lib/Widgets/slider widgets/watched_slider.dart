@@ -8,22 +8,17 @@ class WatchedSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox
-    (
+    return SizedBox(
       height: 200,
       width: double.infinity,
-      child: ListView.builder
-      (
+      child: ListView.builder(
         scrollDirection: Axis.horizontal,
         physics: const BouncingScrollPhysics(),
         itemCount: 10,
-        itemBuilder: (context, index) 
-        {
-          return Padding
-          (
+        itemBuilder: (context, index) {
+          return Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Container
-            (
+            child: Container(
               color: Colours.themeColour,
               height: 200,
               width: 200,

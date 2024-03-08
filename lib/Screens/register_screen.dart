@@ -13,7 +13,8 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   bool registerSuccessful = false;
 
   Future<void> _register(BuildContext context) async {
@@ -21,19 +22,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
     print("email: ${_emailController.text}");
     print("Password: ${_passwordController.text}");
 
-  if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-    // Show an alert or snackbar indicating that both username and password are required
-    // For simplicity, showing a snackbar here
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Both email and password are required.'),
-      ),
-    );
-    return; // Exit the method if either username or password is empty
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      // Show an alert or snackbar indicating that both username and password are required
+      // For simplicity, showing a snackbar here
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Both email and password are required.'),
+        ),
+      );
+      return; // Exit the method if either username or password is empty
     }
 
     await _userAuthentication(context);
-    
+
     if (registerSuccessful) {
       // Navigate to the HomeScreen and replace the login screen in the navigation stack
       Navigator.pushReplacement(
@@ -44,52 +45,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _userAuthentication(BuildContext context) async {
-  //show loading circle
+    //show loading circle
     showDialog(
-      context : context,
-      builder : (context)
-      {
-        return const Center(
-          child: CircularProgressIndicator()
+        context: context,
+        builder: (context) {
+          return const Center(child: CircularProgressIndicator());
+        });
+    try {
+      if (_passwordController.text == _confirmPasswordController.text) {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Passwords don't match"),
+          ),
         );
       }
-      );
-  try {
-    if (_passwordController.text == _confirmPasswordController.text)
-    {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-    }
-    else
-    {
+
+      // If the above line is executed without any errors, authentication is successful
+      setState(() {
+        registerSuccessful = true;
+      });
+    } catch (e) {
+      // If there's an error during authentication, show a message and set loginSuccessful to false
+      print("Authentication Error: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Passwords don't match"),
+          content: Text('Invalid username or password. Please try again.'),
         ),
-      );    
+      );
+      setState(() {
+        registerSuccessful = false;
+      });
     }
-    
-    // If the above line is executed without any errors, authentication is successful
-    setState(() {
-      registerSuccessful = true;
-    });
-  } catch (e) {
-    // If there's an error during authentication, show a message and set loginSuccessful to false
-    print("Authentication Error: $e");
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Invalid username or password. Please try again.'),
-      ),
-    );
-    setState(() {
-      registerSuccessful = false;
-    });
-  }
 
-  Navigator.pop(context);
-}
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +113,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(18),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 20),
                     ),
                   ),
                 ),
@@ -134,7 +129,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(18),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 20),
                     ),
                   ),
                 ),
@@ -149,34 +145,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(18),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 20),
                     ),
                   ),
-                ),               
+                ),
                 const SizedBox(height: 20),
-                Center( // Center the ElevatedButton
-                    child: Container(
-                      width: textFieldWidth, // Set the width if you want a fixed width
-                      child: ElevatedButton(
-                        onPressed: () => _register(context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colours.themeColour,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 40,
-                            vertical: 16,
-                          ),
+                Center(
+                  // Center the ElevatedButton
+                  child: Container(
+                    width:
+                        textFieldWidth, // Set the width if you want a fixed width
+                    child: ElevatedButton(
+                      onPressed: () => _register(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colours.themeColour,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 40,
+                          vertical: 16,
                         ),
-                        child: const Text(
-                          'Register',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colours.scaffoldBgColour,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      ),
+                      child: const Text(
+                        'Register',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colours.scaffoldBgColour,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ),
+                ),
                 const SizedBox(height: 25),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -190,16 +189,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const LoginScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => const LoginScreen()),
                         );
                       },
-                      child: const Text(
-                        'Login',
-                        style: TextStyle(
-                          color: Colours.themeColour,
-                          fontWeight: FontWeight.bold,
-                        )
-                      ),
+                      child: const Text('Login',
+                          style: TextStyle(
+                            color: Colours.themeColour,
+                            fontWeight: FontWeight.bold,
+                          )),
                     )
                   ],
                 )

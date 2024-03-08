@@ -33,55 +33,58 @@ class _searchBarFunState extends State<searchBarFunc> {
   }
 
   Future<void> searchMoviesByActor(int actorId) async {
-  var moviesByActorUrl =
-      'https://api.themoviedb.org/3/person/$actorId/movie_credits?api_key=${Constants.apiKey}';
-  var moviesByActorResponse = await http.get(Uri.parse(moviesByActorUrl));
+    var moviesByActorUrl =
+        'https://api.themoviedb.org/3/person/$actorId/movie_credits?api_key=${Constants.apiKey}';
+    var moviesByActorResponse = await http.get(Uri.parse(moviesByActorUrl));
 
-  if (moviesByActorResponse.statusCode == 200) {
-    var tempData = jsonDecode(moviesByActorResponse.body);
-    var searchJson = tempData['cast'];
+    if (moviesByActorResponse.statusCode == 200) {
+      var tempData = jsonDecode(moviesByActorResponse.body);
+      var searchJson = tempData['cast'];
 
-    List<Movie> tempResult = [];
-    for (var i = 0; i < searchJson.length; i++) {
-      if (searchJson[i]['id'] != null &&
-          searchJson[i]['title'] != null &&
-          searchJson[i]['poster_path'] != null &&
-          searchJson[i]['vote_average'] != null &&
-          searchJson[i]['media_type'] == 'movie') {
-        tempResult.add(Movie.fromJson(searchJson[i] as Map<String, dynamic>));
+      List<Movie> tempResult = [];
+      for (var i = 0; i < searchJson.length; i++) {
+        if (searchJson[i]['id'] != null &&
+            searchJson[i]['title'] != null &&
+            searchJson[i]['poster_path'] != null &&
+            searchJson[i]['vote_average'] != null &&
+            searchJson[i]['media_type'] == 'movie') {
+          tempResult.add(Movie.fromJson(searchJson[i] as Map<String, dynamic>));
+        }
       }
+
+      setState(() {
+        searchResult = tempResult;
+      });
+    } else {
+      // Handle error when fetching movies by actor
+      print(
+          'Error fetching movies by actor: ${moviesByActorResponse.statusCode}');
     }
-
-    setState(() {
-      searchResult = tempResult;
-    });
-  } else {
-    // Handle error when fetching movies by actor
-    print('Error fetching movies by actor: ${moviesByActorResponse.statusCode}');
   }
-}
 
-Future<List<String>> getActorSuggestions(String query) async {
-  var actorSuggestionsUrl =
-      'https://api.themoviedb.org/3/search/person?api_key=${Constants.apiKey}&query=$query&include_adult=false';
-  var actorSuggestionsResponse = await http.get(Uri.parse(actorSuggestionsUrl));
+  Future<List<String>> getActorSuggestions(String query) async {
+    var actorSuggestionsUrl =
+        'https://api.themoviedb.org/3/search/person?api_key=${Constants.apiKey}&query=$query&include_adult=false';
+    var actorSuggestionsResponse =
+        await http.get(Uri.parse(actorSuggestionsUrl));
 
-  if (actorSuggestionsResponse.statusCode == 200) {
-    var tempData = jsonDecode(actorSuggestionsResponse.body);
-    var searchJson = tempData['results'];
+    if (actorSuggestionsResponse.statusCode == 200) {
+      var tempData = jsonDecode(actorSuggestionsResponse.body);
+      var searchJson = tempData['results'];
 
-    List<String> suggestions = searchJson
-        .where((result) => result['media_type'] == 'person')
-        .map<String>((result) => result['name'] as String)
-        .toList();
+      List<String> suggestions = searchJson
+          .where((result) => result['media_type'] == 'person')
+          .map<String>((result) => result['name'] as String)
+          .toList();
 
-    return suggestions;
-  } else {
-    // Handle error when fetching actor suggestions
-    print('Error fetching actor suggestions: ${actorSuggestionsResponse.statusCode}');
-    return [];
+      return suggestions;
+    } else {
+      // Handle error when fetching actor suggestions
+      print(
+          'Error fetching actor suggestions: ${actorSuggestionsResponse.statusCode}');
+      return [];
+    }
   }
-}
 
   Future<void> searchMoviesByTitle(String val) async {
     var searchMovieUrl =
@@ -100,7 +103,8 @@ Future<List<String>> getActorSuggestions(String query) async {
               searchJson[i]['poster_path'] != null &&
               searchJson[i]['vote_average'] != null &&
               searchJson[i]['media_type'] != null) {
-            tempResult.add(Movie.fromJson(searchJson[i] as Map<String, dynamic>));
+            tempResult
+                .add(Movie.fromJson(searchJson[i] as Map<String, dynamic>));
           }
         }
       }
@@ -112,18 +116,16 @@ Future<List<String>> getActorSuggestions(String query) async {
   }
 
   Future<void> searchMoviesByCast(String val) async {
-  // Add logic to get actor suggestions and display them
-  List<String> actorSuggestions = await getActorSuggestions(val);
-  print('Actor Suggestions: $actorSuggestions');
-  // Implement logic to show actor suggestions in your UI
-  // (e.g., use a ListView.builder to display suggestions)
+    // Add logic to get actor suggestions and display them
+    List<String> actorSuggestions = await getActorSuggestions(val);
+    print('Actor Suggestions: $actorSuggestions');
+    // Implement logic to show actor suggestions in your UI
+    // (e.g., use a ListView.builder to display suggestions)
 
-  // When an actor is selected (e.g., on suggestion tap), call the searchMoviesByActor method
-  // Example: onTap: () => searchMoviesByActor(actorId),
-  // Note: Ensure you have a way to get the actorId from the selected suggestion.
-}
-
-
+    // When an actor is selected (e.g., on suggestion tap), call the searchMoviesByActor method
+    // Example: onTap: () => searchMoviesByActor(actorId),
+    // Note: Ensure you have a way to get the actorId from the selected suggestion.
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +135,8 @@ Future<List<String>> getActorSuggestions(String query) async {
         showlist = !showlist;
       },
       child: Padding(
-        padding: const EdgeInsets.only(left: 10.0, top: 30, bottom: 20, right: 10),
+        padding:
+            const EdgeInsets.only(left: 10.0, top: 30, bottom: 20, right: 10),
         child: Column(
           children: [
             Row(
@@ -156,7 +159,7 @@ Future<List<String>> getActorSuggestions(String query) async {
                       searchlistfunction(value);
                     },
                     decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(left: 16, top:16),
+                        contentPadding: EdgeInsets.only(left: 16, top: 16),
                         suffixIcon: IconButton(
                           onPressed: () {
                             setState(() {
@@ -170,7 +173,8 @@ Future<List<String>> getActorSuggestions(String query) async {
                           ),
                         ),
                         hintText: 'Search movie',
-                        hintStyle: TextStyle(color: Colors.black.withOpacity(0.8)),
+                        hintStyle:
+                            TextStyle(color: Colors.black.withOpacity(0.8)),
                         border: InputBorder.none),
                   ),
                 ),
@@ -199,68 +203,44 @@ Future<List<String>> getActorSuggestions(String query) async {
             ),
             searchResult.isNotEmpty
                 ? Container(
-  height: MediaQuery.of(context).size.height - 200,
-  child: GridView.builder(
-    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 3, // Number of columns
-      crossAxisSpacing: 15.0, // Spacing between columns
-      mainAxisSpacing: 10.0, // Spacing between rows
-      childAspectRatio: 0.7, // Adjust as needed
-    ),
-    itemCount: searchResult.length,
-    physics: BouncingScrollPhysics(),
-    itemBuilder: (context, index) {
-      return GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MovieDetailsScreen(
-                movie: searchResult[index],
-              ),
-            ),
-          );
-        },
-        child: Container(
-          decoration: const BoxDecoration(
-            color: Color.fromRGBO(20, 20, 20, 1),
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  image: DecorationImage(
-                    image: NetworkImage(
-                      'https://image.tmdb.org/t/p/w500${searchResult[index].posterPath}',
+                    height: MediaQuery.of(context).size.height - 200,
+                    child: GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3, // Number of items per row
+                        crossAxisSpacing: 5.0,
+                        mainAxisSpacing: 15.0,
+                      ),
+                      itemCount: searchResult.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MovieDetailsScreen(
+                                  movie: searchResult[index],
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                  'https://image.tmdb.org/t/p/w500${searchResult[index].posterPath}',
+                                ),
+                                fit: BoxFit.fitHeight,
+                              ),
+                            ),
+                            height: 300, // Adjust the height as needed
+                            width: 200,
+                          ),
+                        );
+                      },
                     ),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                height: 158, // Adjust as needed
-                width: double.infinity,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  height: 40,
-                  child: Text(
-                    '${searchResult[index].title}',
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  ),
-)
-
+                  )
                 : Container(),
           ],
         ),
