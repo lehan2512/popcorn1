@@ -14,10 +14,13 @@ class searchBarFunc extends StatefulWidget {
 
 class _searchBarFunState extends State<searchBarFunc> {
   List<Movie> searchResult = [];
+
   TextEditingController searchtext = TextEditingController();
   bool showlist = false;
   var val1;
-  String selectedFilter = 'Title'; // Default filter option
+  String selectedFilter = 'Title';
+
+  String get apiKey => Constants.apiKey;
 
   Future<void> searchlistfunction(String val) async {
     if (val.isEmpty) {
@@ -32,99 +35,76 @@ class _searchBarFunState extends State<searchBarFunc> {
     }
   }
 
-  Future<void> searchMoviesByActor(int actorId) async {
-    var moviesByActorUrl =
-        'https://api.themoviedb.org/3/person/$actorId/movie_credits?api_key=${Constants.apiKey}';
-    var moviesByActorResponse = await http.get(Uri.parse(moviesByActorUrl));
-
-    if (moviesByActorResponse.statusCode == 200) {
-      var tempData = jsonDecode(moviesByActorResponse.body);
-      var searchJson = tempData['cast'];
-
-      List<Movie> tempResult = [];
-      for (var i = 0; i < searchJson.length; i++) {
-        if (searchJson[i]['id'] != null &&
-            searchJson[i]['title'] != null &&
-            searchJson[i]['poster_path'] != null &&
-            searchJson[i]['vote_average'] != null &&
-            searchJson[i]['media_type'] == 'movie') {
-          tempResult.add(Movie.fromJson(searchJson[i] as Map<String, dynamic>));
-        }
-      }
-
-      setState(() {
-        searchResult = tempResult;
-      });
-    } else {
-      // Handle error when fetching movies by actor
-      print(
-          'Error fetching movies by actor: ${moviesByActorResponse.statusCode}');
-    }
-  }
-
-  Future<List<String>> getActorSuggestions(String query) async {
-    var actorSuggestionsUrl =
-        'https://api.themoviedb.org/3/search/person?api_key=${Constants.apiKey}&query=$query&include_adult=false';
-    var actorSuggestionsResponse =
-        await http.get(Uri.parse(actorSuggestionsUrl));
-
-    if (actorSuggestionsResponse.statusCode == 200) {
-      var tempData = jsonDecode(actorSuggestionsResponse.body);
-      var searchJson = tempData['results'];
-
-      List<String> suggestions = searchJson
-          .where((result) => result['media_type'] == 'person')
-          .map<String>((result) => result['name'] as String)
-          .toList();
-
-      return suggestions;
-    } else {
-      // Handle error when fetching actor suggestions
-      print(
-          'Error fetching actor suggestions: ${actorSuggestionsResponse.statusCode}');
-      return [];
-    }
-  }
-
   Future<void> searchMoviesByTitle(String val) async {
-    var searchMovieUrl =
-        'https://api.themoviedb.org/3/search/multi?api_key=${Constants.apiKey}&query=$val&include_adult=false';
-    var searchMovieResponse = await http.get(Uri.parse(searchMovieUrl));
+    try {
+      var searchMovieUrl =
+          'https://api.themoviedb.org/3/search/multi?api_key=${Constants.apiKey}&query=$val&include_adult=false';
+      var searchMovieResponse = await http.get(Uri.parse(searchMovieUrl));
 
-    if (searchMovieResponse.statusCode == 200) {
-      var tempData = jsonDecode(searchMovieResponse.body);
-      var searchJson = tempData['results'];
+      if (searchMovieResponse.statusCode == 200) {
+        var tempData = jsonDecode(searchMovieResponse.body);
+        var searchJson = tempData['results'];
 
-      List<Movie> tempResult = [];
-      for (var i = 0; i < searchJson.length; i++) {
-        if (searchJson[i]['media_type'] == 'movie') {
-          if (searchJson[i]['id'] != null &&
-              searchJson[i]['title'] != null &&
-              searchJson[i]['poster_path'] != null &&
-              searchJson[i]['vote_average'] != null &&
-              searchJson[i]['media_type'] != null) {
-            tempResult
-                .add(Movie.fromJson(searchJson[i] as Map<String, dynamic>));
+        List<Movie> tempResult = [];
+        for (var i = 0; i < searchJson.length; i++) {
+          if (searchJson[i]['media_type'] == 'movie') {
+            if (searchJson[i]['id'] != null &&
+                searchJson[i]['title'] != null &&
+                searchJson[i]['poster_path'] != null &&
+                searchJson[i]['vote_average'] != null &&
+                searchJson[i]['media_type'] != null) {
+              tempResult
+                  .add(Movie.fromJson(searchJson[i] as Map<String, dynamic>));
+            }
           }
         }
-      }
 
-      setState(() {
-        searchResult = tempResult;
-      });
+        setState(() {
+          searchResult = tempResult;
+        });
+      } else {
+        throw Exception('Failed to load search results');
+      }
+    } catch (e) {
+      // Handle network errors
+      print('Network error: $e');
+      // You can display an error message to the user or perform other actions as needed
     }
   }
 
   Future<void> searchMoviesByCast(String val) async {
-    // Add logic to get actor suggestions and display them
-    List<String> actorSuggestions = await getActorSuggestions(val);
-    print('Actor Suggestions: $actorSuggestions');
-    // Implement logic to show actor suggestions in your UI
-    // (e.g., use a ListView.builder to display suggestions)
+    try {
+      var encodedName = Uri.encodeComponent(val); // Encode the actor's name
+      var searchActorUrl =
+          'https://api.themoviedb.org/3/search/person?api_key=${Constants.apiKey}&query=$encodedName&include_adult=false';
+      var searchActorResponse = await http.get(Uri.parse(searchActorUrl));
 
-    // When an actor is selected (e.g., on suggestion tap), call the searchMoviesByActor method
-    // Example: onTap: () => searchMoviesByActor(actorId),
-    // Note: Ensure you have a way to get the actorId from the selected suggestion.
+      if (searchActorResponse.statusCode == 200) {
+        var tempData = jsonDecode(searchActorResponse.body);
+        var searchJson = tempData['results'];
+
+        if (searchJson != null && searchJson.isNotEmpty) {
+          List<Movie> tempResult = [];
+
+          for (var actorData in searchJson) {
+            if (actorData.containsKey('known_for')) {
+              List<dynamic> knownFor = actorData['known_for'];
+              tempResult.addAll(knownFor.map((json) => Movie.fromJson(json)));
+            }
+          }
+
+          setState(() {
+            searchResult = tempResult;
+          });
+        }
+      } else {
+        throw Exception('Failed to load search results');
+      }
+    } catch (e) {
+      // Handle network errors
+      print('Network error: $e');
+      // You can display an error message to the user or perform other actions as needed
+    }
   }
 
   @override
@@ -150,10 +130,6 @@ class _searchBarFunState extends State<searchBarFunc> {
                   child: TextField(
                     autofocus: false,
                     controller: searchtext,
-                    onSubmitted: (value) {
-                      // Search only when the text is submitted
-                      searchlistfunction(value);
-                    },
                     onChanged: (value) {
                       // Search when the text changes
                       searchlistfunction(value);
@@ -207,7 +183,7 @@ class _searchBarFunState extends State<searchBarFunc> {
                     child: GridView.builder(
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3, // Number of items per row
+                        crossAxisCount: 3,
                         crossAxisSpacing: 5.0,
                         mainAxisSpacing: 15.0,
                       ),

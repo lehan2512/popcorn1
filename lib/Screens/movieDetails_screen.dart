@@ -9,6 +9,8 @@ import 'package:http/http.dart' as http;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:popcorn1/fireStore_storing.dart';
 
 import '../Widgets/slider widgets/movie_slider.dart';
 
@@ -30,52 +32,58 @@ class _MovieDetailsState extends State<MovieDetailsScreen> {
   String? watchlistItemId; // Store the document ID in state
 
   Future<List<Movie>> getSimilarMovies() async {
-    var _similarMoviesUrl =
-        'https://api.themoviedb.org/3/movie/${widget.movie.id}/recommendations?api_key=${Constants.apiKey}&sort_by=popularity.desc';
-    //https://api.themoviedb.org/3/movie/${widget.movie.id}/recommendations?api_key=${Constants.apiKey}&sort_by=popularity.desc
-
-    try {
-      final response = await http.get(Uri.parse(_similarMoviesUrl));
-      if (response.statusCode == 200) {
-        final decodedData = jsonDecode(response.body)['results'] as List;
-        return decodedData.map((movie) => Movie.fromJson(movie)).toList();
-      } else {
-        print(
-            'Failed to load similar movies. Status code: ${response.statusCode}');
-        throw Exception('Failed to load similar movies');
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      // If no network connectivity, return an empty list
+      return [];
+    } else {
+      var _similarMoviesUrl =
+          'https://api.themoviedb.org/3/movie/${widget.movie.id}/recommendations?api_key=${Constants.apiKey}&sort_by=popularity.desc';
+      try {
+        final response = await http.get(Uri.parse(_similarMoviesUrl));
+        if (response.statusCode == 200) {
+          final decodedData = jsonDecode(response.body)['results'] as List;
+          return decodedData.map((movie) => Movie.fromJson(movie)).toList();
+        } else {
+          print(
+              'Failed to load similar movies. Status code: ${response.statusCode}');
+          throw Exception('Failed to load similar movies');
+        }
+      } catch (error) {
+        print('Error fetching similar movies: $error');
+        throw Exception('Error fetching similar movies');
       }
-    } catch (error) {
-      // Handle other types of errors
-      print('Error fetching similar movies: $error');
-      throw Exception('Error fetching similar movies');
     }
   }
 
   void _addToWatchList() async {
-    if (!addToWatchlist) {
-      // Get the current user
-      User? user = _auth.currentUser;
+  if (!addToWatchlist) {
+    // Get the current user's ID
+    String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+    print(userId);
 
-      if (user != null) {
-        // Save the movie to Firestore under the user's document
-        DocumentReference documentReference = await _firestore
-            .collection('users')
-            .doc(user.uid)
-            .collection('watchlist')
-            .add({
-          'movieId': widget.movie.id,
-        });
-        print('Watchlist item added. Document ID: ${documentReference.id}');
+    if (userId.isNotEmpty) {
+      try {
+        // Save movie details to Firestore
+        await saveMovieDetailsToFirestore(userId, widget.movie.id, 'watched');
 
+        // Update the UI state
         setState(() {
           addToWatchlist = true;
-          watchlistItemId = documentReference.id;
         });
-      } else {
-        print('User not authenticated');
+
+        print('Movie added to watchlist');
+      } catch (error) {
+        print('Error adding movie to watchlist: $error');
+        // Handle error if needed
       }
+    } else {
+      print('User not authenticated');
+      // Handle case where user is not authenticated
     }
   }
+}
+
 
   Future<void> _removeFromWatchList() async {
     if (addToWatchlist && watchlistItemId != null) {
