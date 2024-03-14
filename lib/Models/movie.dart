@@ -39,11 +39,11 @@ class Movie
     return Movie
     (
       id: json["id"] as int,
-      title: json["title"].toString(),
+      title: json["title"] != null ? json["title"].toString() : json["name"].toString(),
       backdropPath: json["backdrop_path"].toString(),
       overview: json["overview"].toString(),
       posterPath: json["poster_path"].toString(),
-      releaseDate: json["release_date"].toString(),
+      releaseDate: json["release_date"] != null ? json["release_date"].toString() : json["first_air_date"].toString(),
       voteAverage: json["vote_average"] as double,
       adult: json["adult"] as bool,
       genreIds: List<int>.from(json['genre_ids']),

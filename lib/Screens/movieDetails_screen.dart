@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, no_leading_underscores_for_local_identifiers, unused_field
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -45,68 +47,35 @@ class _MovieDetailsState extends State<MovieDetailsScreen> {
           final decodedData = jsonDecode(response.body)['results'] as List;
           return decodedData.map((movie) => Movie.fromJson(movie)).toList();
         } else {
-          print(
-              'Failed to load similar movies. Status code: ${response.statusCode}');
           throw Exception('Failed to load similar movies');
         }
       } catch (error) {
-        print('Error fetching similar movies: $error');
         throw Exception('Error fetching similar movies');
       }
     }
   }
 
   void _addToWatchList() async {
-  if (!addToWatchlist) {
-    // Get the current user's ID
-    String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
-    print(userId);
+    if (!addToWatchlist) {
+      // Get the current user's ID
+      String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+      // Debugging print statement
 
-    if (userId.isNotEmpty) {
-      try {
-        // Save movie details to Firestore
-        await saveMovieDetailsToFirestore(userId, widget.movie.id, 'watched');
+      if (userId.isNotEmpty) {
+        try {
+          // Save movie details to Firestore
+          await saveMovieDetailsToFirestore(userId, widget.movie.id, 'watched');
 
-        // Update the UI state
-        setState(() {
-          addToWatchlist = true;
-        });
+          // Update the UI state
+          setState(() {
+            addToWatchlist = true;
+          });
 
-        print('Movie added to watchlist');
-      } catch (error) {
-        print('Error adding movie to watchlist: $error');
-        // Handle error if needed
-      }
-    } else {
-      print('User not authenticated');
-      // Handle case where user is not authenticated
-    }
-  }
-}
-
-
-  Future<void> _removeFromWatchList() async {
-    if (addToWatchlist && watchlistItemId != null) {
-      User? user = _auth.currentUser;
-
-      if (user != null) {
-        // Remove the movie from Firestore
-        await _firestore
-            .collection('users')
-            .doc(user.uid)
-            .collection('watchlist')
-            .doc(watchlistItemId)
-            .delete();
-
-        // Clear the stored document ID
-        setState(() {
-          addToWatchlist = false;
-          watchlistItemId = null;
-        });
-
-        print('Movie removed from watchlist');
+        } catch (error) {
+          // Handle error if needed
+        }
       } else {
-        print('User not authenticated');
+        // Handle case where user is not authenticated
       }
     }
   }
@@ -120,210 +89,210 @@ class _MovieDetailsState extends State<MovieDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: CustomScrollView(
-      slivers: [
-        SliverAppBar.large(
-          leading: Container(
-            height: 70,
-            width: 70,
-            margin: const EdgeInsets.only(top: 16, left: 16),
-            decoration: BoxDecoration(
-                color: Colours.scaffoldBgColour,
-                borderRadius: BorderRadius.circular(8)),
-            child: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar.large(
+            leading: Container(
+              height: 70,
+              width: 70,
+              margin: const EdgeInsets.only(top: 16, left: 16),
+              decoration: BoxDecoration(
+                  color: Colours.scaffoldBgColour,
+                  borderRadius: BorderRadius.circular(8)),
+              child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+            ),
+            backgroundColor: Colours.scaffoldBgColour,
+            expandedHeight: 300,
+            pinned: true,
+            floating: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Container(
+                  color: Colours.scaffoldBgColour.withOpacity(0.3),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    widget.movie.title,
+                    style: GoogleFonts.aBeeZee(
+                        fontSize: 16, fontWeight: FontWeight.w600),
+                  )),
+              background: Image.network(
+                  '${Constants.imagePath}${widget.movie.backdropPath}',
+                  filterQuality: FilterQuality.high,
+                  fit: BoxFit.fitWidth),
+            ),
           ),
-          backgroundColor: Colours.scaffoldBgColour,
-          expandedHeight: 300,
-          pinned: true,
-          floating: true,
-          flexibleSpace: FlexibleSpaceBar(
-            title: Container(
-                color: Colours.scaffoldBgColour.withOpacity(0.3),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  widget.movie.title,
-                  style: GoogleFonts.aBeeZee(
-                      fontSize: 16, fontWeight: FontWeight.w600),
-                )),
-            background: Image.network(
-                '${Constants.imagePath}${widget.movie.backdropPath}',
-                filterQuality: FilterQuality.high,
-                fit: BoxFit.fitWidth),
-          ),
-        ),
-        SliverToBoxAdapter(
-            child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(left: 10, top: 10),
-                      child: SizedBox(
-                        height: 38,
-                        width: MediaQuery.of(context).size.width,
-                        child: ListView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            scrollDirection: Axis.horizontal,
-                            itemCount: widget.movie.genreNames.length,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                  margin: const EdgeInsets.only(right: 10),
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                      color: Color.fromARGB(255, 82, 82, 82),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Text(
-                                    widget.movie.genreNames[index],
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                    ),
-                                  ));
-                            }),
+          SliverToBoxAdapter(
+              child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.only(left: 10, top: 10),
+                        child: SizedBox(
+                          height: 38,
+                          width: MediaQuery.of(context).size.width,
+                          child: ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: widget.movie.genreNames.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                    margin: const EdgeInsets.only(right: 10),
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        color: const Color.fromARGB(255, 82, 82, 82),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Text(
+                                      widget.movie.genreNames[index],
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                      ),
+                                    ));
+                              }),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Overview',
-                      style: GoogleFonts.aBeeZee(
-                          fontSize: 20, fontWeight: FontWeight.w800),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      widget.movie.overview,
-                      style: GoogleFonts.aBeeZee(
-                          fontSize: 15, fontWeight: FontWeight.w400),
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Text(
-                          'Cast: ',
-                          style: GoogleFonts.roboto(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: FutureBuilder(
-                            future: fetchMainCharacters(widget.movie.id),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return Center(
-                                    child: CircularProgressIndicator());
-                              } else if (snapshot.hasError) {
-                                return Center(
-                                  child: Text(snapshot.error.toString()),
-                                );
-                              } else if (snapshot.hasData) {
-                                // Display the cast names
-                                return Text(
-                                  snapshot.data!.join(', '),
-                                  style: GoogleFonts.roboto(
-                                    fontSize: 12,
-                                  ),
-                                );
-                              } else {
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                              }
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 15),
-                    Row(children: [
-                      Text('Release date: ',
-                          style: GoogleFonts.roboto(
-                              fontSize: 12, fontWeight: FontWeight.bold)),
-                      Text(widget.movie.releaseDate,
-                          style: GoogleFonts.roboto(
-                            fontSize: 12,
-                          ))
-                    ]),
-                    const SizedBox(height: 5),
-                    Row(children: [
-                      Text('Vote average: ',
-                          style: GoogleFonts.roboto(
-                              fontSize: 12, fontWeight: FontWeight.bold)),
-                      Text(widget.movie.voteAverage.toStringAsFixed(1),
-                          style: GoogleFonts.roboto(
-                            fontSize: 12,
-                          ))
-                    ]),
-                    const SizedBox(height: 20),
-                    Center(
-                      // Center the ElevatedButton
-                      child: Container(
-                        width: 300, // Set the width if you want a fixed width
-                        child: ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              addToWatchlist = !addToWatchlist;
-                              if (addToWatchlist) {
-                                _addToWatchList(); // Call the function to save the movie
-                              } else {
-                                _removeFromWatchList();
-                              }
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colours.themeColour,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 40,
-                              vertical: 16,
-                            ),
-                          ),
-                          child: Text(
-                            addToWatchlist
-                                ? 'Added to WatchList'
-                                : 'Add to WatchList',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              color: Colours.scaffoldBgColour,
+                      const SizedBox(height: 20),
+                      Text(
+                        'Overview',
+                        style: GoogleFonts.aBeeZee(
+                            fontSize: 20, fontWeight: FontWeight.w800),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        widget.movie.overview,
+                        style: GoogleFonts.aBeeZee(
+                            fontSize: 15, fontWeight: FontWeight.w400),
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Text(
+                            'Cast: ',
+                            style: GoogleFonts.roboto(
+                              fontSize: 12,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: FutureBuilder(
+                              future: fetchMainCharacters(widget.movie.id),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                      child: CircularProgressIndicator());
+                                } else if (snapshot.hasError) {
+                                  return Center(
+                                    child: Text(snapshot.error.toString()),
+                                  );
+                                } else if (snapshot.hasData) {
+                                  // Display the cast names
+                                  return Text(
+                                    snapshot.data!.join(', '),
+                                    style: GoogleFonts.roboto(
+                                      fontSize: 12,
+                                    ),
+                                  );
+                                } else {
+                                  return const Center(
+                                      child: CircularProgressIndicator());
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      Row(children: [
+                        Text('Release date: ',
+                            style: GoogleFonts.roboto(
+                                fontSize: 12, fontWeight: FontWeight.bold)),
+                        Text(widget.movie.releaseDate,
+                            style: GoogleFonts.roboto(
+                              fontSize: 12,
+                            ))
+                      ]),
+                      const SizedBox(height: 5),
+                      Row(children: [
+                        Text('Vote average: ',
+                            style: GoogleFonts.roboto(
+                                fontSize: 12, fontWeight: FontWeight.bold)),
+                        Text(widget.movie.voteAverage.toStringAsFixed(1),
+                            style: GoogleFonts.roboto(
+                              fontSize: 12,
+                            ))
+                      ]),
+                      const SizedBox(height: 20),
+                      Center(
+                        // Center the ElevatedButton
+                        child: SizedBox(
+                          width: 300, // Set the width if you want a fixed width
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                addToWatchlist = true;
+                                if (addToWatchlist) {
+                                  _addToWatchList(); // Call the function to save the movie
+                                }
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colours.themeColour,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 40,
+                                vertical: 16,
+                              ),
+                            ),
+                            child: Text(
+                              addToWatchlist
+                                  ? 'Added to WatchList'
+                                  : 'Add to WatchList',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Colours.scaffoldBgColour,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 32),
-                    SizedBox(
-                        child: FutureBuilder(
-                      future: similarMovies,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
-                        } else if (snapshot.hasError) {
-                          return Center(
-                            child: Text(snapshot.error.toString()),
-                          );
-                        } else if (snapshot.hasData) {
-                          return MovieSlider(
-                              snapshot: snapshot,
-                              categorytittle: "Similar movies",
-                              itemlength: snapshot.data!.length);
-                        } else {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-                      },
-                    )),
-                  ],
-                )))
-      ],
-    ));
+                      const SizedBox(height: 32),
+                      SizedBox(
+                          child: FutureBuilder(
+                        future: similarMovies,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text(snapshot.error.toString()),
+                            );
+                          } else if (snapshot.hasData) {
+                            return MovieSlider(
+                                snapshot: snapshot,
+                                categorytittle: "Similar movies",
+                                itemlength: snapshot.data!.length);
+                          } else {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+                        },
+                      )),
+                    ],
+                  )))
+        ],
+      ),
+    );
   }
 }

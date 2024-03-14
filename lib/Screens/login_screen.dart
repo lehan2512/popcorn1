@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:popcorn1/colours.dart';
@@ -43,8 +45,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _login(BuildContext context) async {
-    print("email: ${_emailController.text}");
-    print("Password: ${_passwordController.text}");
 
     // Check if the username and password are filled
   if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
@@ -110,7 +110,6 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   } catch (e) {
     // If there's an error during authentication, show a message and set loginSuccessful to false
-    print("Authentication Error: $e");
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Invalid username or password. Please try again.'),
@@ -143,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   filterQuality: FilterQuality.high,
                 ),
                 const SizedBox(height: 100),
-                Container(
+                SizedBox(
                   width: textFieldWidth,
                   child: TextField(
                     controller: _emailController,
@@ -157,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Container(
+                SizedBox(
                   width: textFieldWidth,
                   child: TextField(
                     controller: _passwordController,
@@ -187,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 20),
                 Center( // Center the ElevatedButton
-                    child: Container(
+                    child: SizedBox(
                       width: textFieldWidth, // Set the width if you want a fixed width
                       child: ElevatedButton(
                         onPressed: () => _login(context),
@@ -217,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       'New user?',
                       style: TextStyle(color: Colors.white),
                     ),
-                    SizedBox(width: 7),
+                    const SizedBox(width: 7),
                     GestureDetector(
                       onTap: () {
                         Navigator.push(

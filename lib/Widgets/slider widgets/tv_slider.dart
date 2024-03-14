@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:popcorn1/Screens/gridView_screen.dart';
-import 'package:popcorn1/Screens/movieDetails_screen.dart';
+import 'package:popcorn1/Screens/tvShowDetails_screen.dart';
 import 'package:popcorn1/constants.dart';
 
-class MovieSlider extends StatelessWidget {
+class TvShowSlider extends StatelessWidget {
   final AsyncSnapshot snapshot;
   final String categorytittle;
   final int itemlength;
 
-  const MovieSlider({
+  const TvShowSlider({
     super.key,
     required this.snapshot,
     required this.categorytittle,
@@ -53,7 +53,7 @@ class MovieSlider extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => MovieDetailsScreen(
+                                builder: (context) => tvShowDetailsScreen(
                                     movie: snapshot.data[index])));
                       },
                       child: Container(

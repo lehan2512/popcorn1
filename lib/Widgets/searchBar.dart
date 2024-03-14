@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, camel_case_types
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:popcorn1/Models/movie.dart';
@@ -30,7 +32,7 @@ class _searchBarFunState extends State<searchBarFunc> {
 
     if (selectedFilter == 'Title') {
       await searchMoviesByTitle(val);
-    } else if (selectedFilter == 'Cast') {
+    } else if (selectedFilter == 'Actor') {
       await searchMoviesByCast(val);
     }
   }
@@ -67,7 +69,6 @@ class _searchBarFunState extends State<searchBarFunc> {
       }
     } catch (e) {
       // Handle network errors
-      print('Network error: $e');
       // You can display an error message to the user or perform other actions as needed
     }
   }
@@ -102,7 +103,6 @@ class _searchBarFunState extends State<searchBarFunc> {
       }
     } catch (e) {
       // Handle network errors
-      print('Network error: $e');
       // You can display an error message to the user or perform other actions as needed
     }
   }
@@ -126,7 +126,7 @@ class _searchBarFunState extends State<searchBarFunc> {
                   width: MediaQuery.of(context).size.width - 100,
                   decoration: BoxDecoration(
                       color: Colors.white.withOpacity(.8),
-                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                      borderRadius: const BorderRadius.all(Radius.circular(20))),
                   child: TextField(
                     autofocus: false,
                     controller: searchtext,
@@ -135,7 +135,7 @@ class _searchBarFunState extends State<searchBarFunc> {
                       searchlistfunction(value);
                     },
                     decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(left: 16, top: 16),
+                        contentPadding: const EdgeInsets.only(left: 16, top: 16),
                         suffixIcon: IconButton(
                           onPressed: () {
                             setState(() {
@@ -158,7 +158,7 @@ class _searchBarFunState extends State<searchBarFunc> {
                 // Dropdown for filter options
                 DropdownButton<String>(
                   value: selectedFilter,
-                  items: <String>['Title', 'Cast'].map((String value) {
+                  items: <String>['Title', 'Actor'].map((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
@@ -178,7 +178,7 @@ class _searchBarFunState extends State<searchBarFunc> {
               height: 20,
             ),
             searchResult.isNotEmpty
-                ? Container(
+                ? SizedBox(
                     height: MediaQuery.of(context).size.height - 200,
                     child: GridView.builder(
                       gridDelegate:

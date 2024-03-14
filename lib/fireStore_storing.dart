@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -17,10 +19,8 @@ Future<void> saveUserInfoToFirestore(String email) async {
         // You can add more fields as per your requirement
       });
     } else {
-      print('User is not signed in.');
     }
   } catch (e) {
-    print('Error saving user information: $e');
   }
 }
 
@@ -40,6 +40,5 @@ Future<void> saveMovieDetailsToFirestore(String userId, int movieId, String list
       // Add more fields as per your requirement
     });
   } catch (e) {
-    print('Error saving movie details: $e');
   }
 }

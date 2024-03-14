@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:popcorn1/Widgets/searchBar.dart';
 
 class SearchScreen extends StatelessWidget {
+  const SearchScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +20,7 @@ class SearchScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: searchBarFunc(),
+      body: const searchBarFunc(),
     );
   }
 }

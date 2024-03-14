@@ -1,4 +1,10 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
+import 'package:popcorn1/Screens/home_screen.dart';
+import 'package:popcorn1/Screens/login_screen.dart';
+import 'package:popcorn1/Screens/search_screen.dart';
+import 'package:popcorn1/colours.dart';
 import 'package:popcorn1/constants.dart';
 import '../Models/movie.dart';
 import 'movieDetails_screen.dart';
@@ -7,7 +13,7 @@ class CategoryListScreen extends StatelessWidget {
   final List<Movie> movies;
   final String categoryTitle;
 
-  const CategoryListScreen({
+  const CategoryListScreen({super.key, 
     required this.movies,
     required this.categoryTitle,
   });
@@ -52,6 +58,47 @@ class CategoryListScreen extends StatelessWidget {
             ),
           );
         },
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colours.scaffoldBgColour,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            IconButton(
+              color: Colors.white,
+              iconSize: 45,
+              icon: const Icon(Icons.home),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                );
+              },
+            ),
+            IconButton(
+              color: Colors.white,
+              iconSize: 45,
+              icon: const Icon(Icons.search),
+              onPressed: () {
+                // Navigate to the search screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SearchScreen()),
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.favorite),
+              onPressed: () {
+                // Navigate to the watchlist screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

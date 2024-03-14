@@ -19,8 +19,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _register(BuildContext context) async {
     // For simplicity, just printing the email and password
-    print("email: ${_emailController.text}");
-    print("Password: ${_passwordController.text}");
 
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       // Show an alert or snackbar indicating that both username and password are required
@@ -71,7 +69,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
     } catch (e) {
       // If there's an error during authentication, show a message and set loginSuccessful to false
-      print("Authentication Error: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Invalid username or password. Please try again.'),
@@ -104,7 +101,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   filterQuality: FilterQuality.high,
                 ),
                 const SizedBox(height: 100),
-                Container(
+                SizedBox(
                   width: textFieldWidth,
                   child: TextField(
                     controller: _emailController,
@@ -119,7 +116,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Container(
+                SizedBox(
                   width: textFieldWidth,
                   child: TextField(
                     controller: _passwordController,
@@ -135,7 +132,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Container(
+                SizedBox(
                   width: textFieldWidth,
                   child: TextField(
                     controller: _confirmPasswordController,
@@ -153,7 +150,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 20),
                 Center(
                   // Center the ElevatedButton
-                  child: Container(
+                  child: SizedBox(
                     width:
                         textFieldWidth, // Set the width if you want a fixed width
                     child: ElevatedButton(
