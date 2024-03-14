@@ -65,6 +65,8 @@ class _MovieDetailsState extends State<MovieDetailsScreen> {
             .add({
           'movieId': widget.movie.id,
         });
+        print('Watchlist item added. Document ID: ${documentReference.id}');
+
         setState(() {
           addToWatchlist = true;
           watchlistItemId = documentReference.id;
@@ -77,8 +79,6 @@ class _MovieDetailsState extends State<MovieDetailsScreen> {
 
   Future<void> _removeFromWatchList() async {
     if (addToWatchlist && watchlistItemId != null) {
-
-      
       User? user = _auth.currentUser;
 
       if (user != null) {
