@@ -56,7 +56,7 @@ class _MovieDetailsState extends State<MovieDetailsScreen> {
   }
 
   void _addToWatchList() async {
-    if (!addToWatchlist) {
+    if (addToWatchlist) {
       // Get the current user's ID
       String userId = FirebaseAuth.instance.currentUser?.uid ?? '';
       // Debugging print statement
@@ -240,7 +240,7 @@ class _MovieDetailsState extends State<MovieDetailsScreen> {
                           child: ElevatedButton(
                             onPressed: () {
                               setState(() {
-                                addToWatchlist = true;
+                                addToWatchlist = !addToWatchlist;
                                 if (addToWatchlist) {
                                   _addToWatchList(); // Call the function to save the movie
                                 }

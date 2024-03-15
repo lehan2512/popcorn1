@@ -33,13 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool rememberMe = prefs.getBool('rememberMe') ?? false;
     if (rememberMe) {
-      // If rememberMe is true, set the checkbox value and fill in the username
       setState(() {
         _rememberMe = true;
-        _emailController.text = prefs.getString('email') ?? '';
-        _passwordController.text = prefs.getString('password') ?? '';
-        // Password should not be stored in plain text for security reasons,
-        // so you may not automatically fill the password field.
+        loginSuccessful = true;
       });
     }
   }
@@ -64,18 +60,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if ((_rememberMe) && (loginSuccessful))
     {
-      // Save the "Remember Me" setting and username in local storage
+      // Save the "Remember Me" setting in local storage
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setBool('rememberMe', _rememberMe);
-      prefs.setString('email', _emailController.text);
-      prefs.setString('password', _passwordController.text);
-      // Password should not be stored in plain text for security reasons.
-      // You may implement more secure solutions like token-based authentication.
     } else {
     // If "Remember Me" is not checked, erase the data in local storage
       prefs.remove('rememberMe');
-      prefs.remove('email');
-      prefs.remove('password');
     }
 
     if (loginSuccessful) {

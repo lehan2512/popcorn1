@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:popcorn1/Models/movie.dart';
 import 'package:popcorn1/Screens/movieDetails_screen.dart';
+import 'package:popcorn1/colours.dart';
 import 'package:popcorn1/constants.dart';
 import 'dart:convert';
 
@@ -20,7 +21,7 @@ class _searchBarFunState extends State<searchBarFunc> {
   TextEditingController searchtext = TextEditingController();
   bool showlist = false;
   var val1;
-  String selectedFilter = 'Title';
+  String selectedFilter = 'Movie';
 
   String get apiKey => Constants.apiKey;
 
@@ -30,7 +31,7 @@ class _searchBarFunState extends State<searchBarFunc> {
       return;
     }
 
-    if (selectedFilter == 'Title') {
+    if (selectedFilter == 'Movie') {
       await searchMoviesByTitle(val);
     } else if (selectedFilter == 'Actor') {
       await searchMoviesByCast(val);
@@ -108,119 +109,125 @@ class _searchBarFunState extends State<searchBarFunc> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusManager.instance.primaryFocus?.unfocus();
-        showlist = !showlist;
-      },
-      child: Padding(
-        padding:
-            const EdgeInsets.only(left: 10.0, top: 30, bottom: 20, right: 10),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Container(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width - 100,
-                  decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(.8),
-                      borderRadius: const BorderRadius.all(Radius.circular(20))),
-                  child: TextField(
-                    autofocus: false,
-                    controller: searchtext,
-                    onChanged: (value) {
-                      // Search when the text changes
-                      searchlistfunction(value);
-                    },
-                    decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.only(left: 16, top: 16),
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              searchtext.clear();
-                              FocusManager.instance.primaryFocus?.unfocus();
-                            });
-                          },
-                          icon: const Icon(
-                            Icons.clear,
-                            color: Colors.black,
-                          ),
-                        ),
-                        hintText: 'Search movie',
-                        hintStyle:
-                            TextStyle(color: Colors.black.withOpacity(0.8)),
-                        border: InputBorder.none),
+Widget build(BuildContext context) {
+  return GestureDetector(
+    onTap: () {
+      FocusManager.instance.primaryFocus?.unfocus();
+      showlist = !showlist;
+    },
+    child: Padding(
+      padding: const EdgeInsets.only(left: 10.0, top: 30, bottom: 20, right: 10),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              SizedBox(width: 10),
+              Container(
+                height: 40,
+                width: MediaQuery.of(context).size.width - 200,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(.8),
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                ),
+                child: TextField(
+                  autofocus: false,
+                  controller: searchtext,
+                  onChanged: (value) {
+                    // Search when the text changes
+                    searchlistfunction(value);
+                  },
+                  cursorColor: Colors.black,
+                  style: TextStyle(color: Colors.black),
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.only(left: 16, top: 10),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          searchtext.clear();
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        });
+                      },
+                      icon: const Icon(
+                        Icons.clear,
+                        color: Colours.scaffoldBgColour,
+                      ),
+                    ),
+                    hintText: 'Search movie or actor...',
+                    hintStyle: TextStyle(color: Colors.black.withOpacity(0.8)),
+                    border: InputBorder.none,
                   ),
                 ),
-                const SizedBox(width: 10),
-                // Dropdown for filter options
-                DropdownButton<String>(
-                  value: selectedFilter,
-                  items: <String>['Title', 'Actor'].map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedFilter = newValue!;
-                      // Clear the search results when the filter changes
-                      searchResult.clear();
-                    });
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            searchResult.isNotEmpty
-                ? SizedBox(
-                    height: MediaQuery.of(context).size.height - 200,
-                    child: GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 5.0,
-                        mainAxisSpacing: 15.0,
-                      ),
-                      itemCount: searchResult.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MovieDetailsScreen(
-                                  movie: searchResult[index],
-                                ),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                  'https://image.tmdb.org/t/p/w500${searchResult[index].posterPath}',
-                                ),
-                                fit: BoxFit.fitHeight,
+              ),
+              const SizedBox(width: 20),
+              // Dropdown for filter options
+              DropdownButton<String>(
+                dropdownColor: Colours.themeColour,
+                value: selectedFilter,
+                icon: Icon(Icons.arrow_drop_down, color: Colours.themeColour),
+                elevation: 0,
+                items: <String>['Movie', 'Actor'].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(
+                      value,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedFilter = newValue!;
+                    // Clear the search results when the filter changes
+                    searchResult.clear();
+                  });
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Expanded(
+            child: searchResult.isNotEmpty
+                ? GridView.builder(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 5.0,
+                      mainAxisSpacing: 15.0,
+                    ),
+                    itemCount: searchResult.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MovieDetailsScreen(
+                                movie: searchResult[index],
                               ),
                             ),
-                            height: 300, // Adjust the height as needed
-                            width: 200,
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            image: DecorationImage(
+                              image: NetworkImage(
+                                'https://image.tmdb.org/t/p/w500${searchResult[index].posterPath}',
+                              ),
+                              fit: BoxFit.fitHeight,
+                            ),
                           ),
-                        );
-                      },
-                    ),
+                          height: 300, // Adjust the height as needed
+                          width: 200,
+                        ),
+                      );
+                    },
                   )
                 : Container(),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
 }

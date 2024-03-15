@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:popcorn1/Screens/login_screen.dart';
 import 'package:popcorn1/Screens/search_screen.dart';
 import 'package:popcorn1/Widgets/slider%20widgets/movie_slider.dart';
@@ -25,6 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
   late Future<List<Movie>> bestMovies;
   late Future<List<Movie>> grossingMovies;
   late Future<List<Movie>> childrensMovies;
+    late Future<List<Movie>> sinhalaMovies;
+
 
   final user = FirebaseAuth.instance.currentUser!;
 
@@ -75,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Image.asset(
           'assets/popcorn(2).png',
           fit: BoxFit.cover,
-          height: 40,
+          height: 50,
           filterQuality: FilterQuality.high,
         ),
         centerTitle: true,
@@ -131,10 +132,6 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Trending movies',
-                style: GoogleFonts.aBeeZee(fontSize: 20),
-              ),
               Column(
                 children: [
                   const SizedBox(height: 15),
@@ -206,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   } else if (snapshot.hasData) {
                     return MovieSlider(
                       snapshot: snapshot,
-                      categorytittle: "Highest grossing movies of all time>",
+                      categorytittle: "Highest grossing movies>",
                       itemlength: snapshot.data!.length,
                     );
                   } else {

@@ -72,7 +72,7 @@ class MovieSlider extends StatelessWidget {
                                   fit: BoxFit.contain,
                                 ),
                               ),
-                              height: 200, // Adjust as needed
+                              height: 200,
                               width: 150,
                             ),
                           ],

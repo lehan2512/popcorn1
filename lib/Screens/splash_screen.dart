@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:popcorn1/Screens/home_screen.dart';
-import 'package:popcorn1/Screens/login_screen.dart';
+import 'package:popcorn1/Screens/start_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -38,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
     bool rememberMe = prefs.getBool('rememberMe') ?? false;
 
     // Add a delay to simulate the splash screen duration
-    Timer(const Duration(seconds: 1), () {
+    Timer(const Duration(seconds: 5), () {
       _navigateToScreen(rememberMe);
     });
   }
@@ -48,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
       context,
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            rememberMe ? const HomeScreen() : const LoginScreen(),
+            rememberMe ? const HomeScreen() : const StartupScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = 0.0;
           const end = 1.0;
